@@ -1,6 +1,6 @@
-# TFT-QuantTrader
+# QuantTrader-TFT
 
-**TFT-QuantTrader** is a project focused on predicting the prices of major stock market indices, such as the S&P 500, Nasdaq, IBEX 35, Dow Jones, and EURO STOXX 50, using Temporal Fusion Transformer (TFT) models. The goal is to create an investment portfolio that maximizes returns while minimizing risk by leveraging the predictions made by the TFT models.
+**QuantTrader-TFT** is a project focused on predicting the prices of major stock market indices, such as the S&P 500, Nasdaq, IBEX 35, Dow Jones, and EURO STOXX 50, using Temporal Fusion Transformer (TFT) models. The goal is to create an investment portfolio that maximizes returns while minimizing risk by leveraging the predictions made by the TFT models.
 
 The models provide predictions with different confidence intervals, which will be used to identify indices with upward trends that are more likely to be profitable. Future enhancements will include strategies to detect significant trend changes.
 
