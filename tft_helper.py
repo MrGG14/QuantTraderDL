@@ -353,11 +353,16 @@ def random_hyperparameter_search(
                     ]
                 )
 
-            # Crear y guardar el gráfico de esta iteración
+            # Añadir barras verticales discontinuas cada 25 valores y etiquetarlas
             dates = test["Date"].to_list()
-            plt.figure(figsize=(10, 6))
-            plt.plot(dates, preds_flat, color="r", label="Predicciones", marker="o", linestyle="--")
-            plt.plot(dates, real_vals, color="g", label="Valores Reales", marker="x", linestyle="-")
+            num_barras = len(dates) // params["pred_len"]
+            for i in range(1, num_barras + 1):
+                pos = i * 25
+                if pos < len(dates):  # Asegurarse de no exceder el rango
+                    plt.axvline(x=dates[pos], color="b", linestyle="--", linewidth=0.8)
+                    plt.text(dates[pos], max(preds_flat), f'Preds month {i}', rotation=90, ha='center', color="blue", fontsize=8)
+
+            # Personalización del gráfico
             plt.title(f"Predicciones vs Valores Reales - Iteración {idx+1}")
             plt.xlabel("Fecha")
             plt.ylabel("Valor")
@@ -370,8 +375,6 @@ def random_hyperparameter_search(
             plot_filename = os.path.join(save_dir, f"iteracion_{idx+1}.png")
             plt.savefig(plot_filename)
             plt.close()  # Cerrar la figura para liberar memoria
-
- 
         except:
             tft_predict(tft, val_dataloader)
 
