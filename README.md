@@ -36,3 +36,51 @@ The models provide predictions with different confidence intervals, which will b
     ```bash
     git clone https://github.com/your-username/TFT-QuantTrader.git
     ```
+
+## Common Import Errors and Solutions
+
+When running the script, you may encounter some common import errors. Below is a list of known issues and recommended solutions:
+
+1. **Error**: `Cannot import name '_centered' from 'scipy.signal.signaltools'`
+   - **Solution**: Manually define and add the `_centered` function in `scipy.signal.signaltools`:
+     ```python
+     def _centered(arr, newsize):
+         # Return the center newsize portion of the array.
+         newsize = np.asarray(newsize)
+         currsize = np.array(arr.shape)
+         startind = (currsize - newsize) // 2
+         endind = startind + newsize
+         myslice = [slice(startind[k], endind[k]) for k in range(len(endind))]
+         return arr[tuple(myslice)]
+
+     scipy.signal.signaltools._centered = _centered
+     ```
+
+2. **Error**: `× Encountered error while generating package metadata.`
+   - **Cause**: This can occur when installing `pytorch-forecasting`.
+   - **Solution**: Ensure that your Python version is **3.10.x** or lower.
+
+3. **Error**: `ModuleNotFoundError: No module named 'numpy.lib.function_base'`
+   - **Solution**: Update NumPy to the latest version:
+     ```bash
+     pip install --upgrade numpy
+     ```
+
+4. **Error**: "A module that was compiled using NumPy 1.x cannot be run in NumPy 2.0.0 as it may crash."
+   - **Solution**: Downgrade NumPy to a compatible version:
+     ```bash
+     pip install numpy==1.24.3
+     ```
+
+5. **Error**: `ModuleNotFoundError: Optuna's integration modules for third-party libraries have started migrating from Optuna...`
+   - **Solution**: Install `optuna-integration`:
+     ```bash
+     pip install optuna-integration
+     ```
+
+6. **Error**: `TypeError: Cannot create a consistent method resolution order (MRO) for bases Callback, PyTorchLightningPruningCallback`
+   - **Solution**: Install specific versions of the required libraries:
+     ```bash
+     pip install torch==2.0.1 pytorch-lightning==2.0.2 pytorch_forecasting==1.0.0 torchaudio==2.0.2 torchdata==0.6.1 torchtext==0.15.2 torchvision==0.15.2 optuna==3.4
+     ```
+
