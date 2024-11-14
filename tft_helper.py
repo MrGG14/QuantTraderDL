@@ -93,7 +93,7 @@ def tft_trainer(
     trainer = pl.Trainer(
         max_epochs=max_epochs,
         accelerator="gpu" if torch.cuda.is_available() else "cpu",
-        # precision=16,
+        precision=16,
         enable_model_summary=False,
         gradient_clip_val=kwargs.get("gradient_clip_val", 0.1),
         limit_train_batches=32,
