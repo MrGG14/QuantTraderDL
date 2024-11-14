@@ -1,7 +1,6 @@
 import scipy.signal.signaltools
 import numpy as np
-
-
+from datetime import timedelta
 def _centered(arr, newsize):
     # Return the center newsize portion of the array.
     newsize = np.asarray(newsize)
@@ -93,7 +92,7 @@ def tft_trainer(
     trainer = pl.Trainer(
         max_epochs=max_epochs,
         accelerator="gpu" if torch.cuda.is_available() else "cpu",
-        precision=16,
+        # precision=16,
         enable_model_summary=False,
         gradient_clip_val=kwargs.get("gradient_clip_val", 0.1),
         limit_train_batches=32,
@@ -353,16 +352,24 @@ def random_hyperparameter_search(
                     ]
                 )
 
-            # Añadir barras verticales discontinuas cada 25 valores y etiquetarlas
+            # Crear y guardar el gráfico de esta iteración
             dates = test["Date"].to_list()
+            plt.figure(figsize=(10, 6))
+            plt.plot(dates, preds_flat, color="r", label="Predicciones", marker="o", linestyle="--")
+            plt.plot(dates, real_vals, color="g", label="Valores Reales", marker="x", linestyle="-")
+
             num_barras = len(dates) // params["pred_len"]
             for i in range(1, num_barras + 1):
                 pos = i * 25
                 if pos < len(dates):  # Asegurarse de no exceder el rango
                     plt.axvline(x=dates[pos], color="b", linestyle="--", linewidth=0.8)
-                    plt.text(dates[pos], max(preds_flat), f'Preds month {i}', rotation=90, ha='center', color="blue", fontsize=8)
+                    plt.text(dates[pos] - timedelta(days=1), max(preds_flat)*1.02, f'Pred {i}', rotation=90, ha='left', color="blue", fontsize=8)
 
-            # Personalización del gráfico
+            # x_ticks = [dates[i * 25 - 1] for i in range(1, num_barras + 1)]
+            # x_labels = [f'Preds month {i}' for i in range(1, num_barras + 1)]
+            # plt.xticks(ticks=x_ticks, labels=x_labels, rotation=45, ha='right', fontsize=8)
+
+            # plt.ylim(bottom=0)
             plt.title(f"Predicciones vs Valores Reales - Iteración {idx+1}")
             plt.xlabel("Fecha")
             plt.ylabel("Valor")
@@ -375,6 +382,38 @@ def random_hyperparameter_search(
             plot_filename = os.path.join(save_dir, f"iteracion_{idx+1}.png")
             plt.savefig(plot_filename)
             plt.close()  # Cerrar la figura para liberar memoria
+
+
+
+            # # Añadir barras verticales discontinuas cada 25 valores y etiquetarlas
+            # dates = test["Date"].to_list()
+
+            #         # Gráfica de las predicciones y los valores reales
+            # plt.plot(dates, preds_flat, color="r", label="Predicciones", marker="o", linestyle="--")
+            # plt.plot(dates, real_vals, color="g", label="Valores Reales", marker="x", linestyle="-")
+
+            # num_barras = len(dates) // params["pred_len"]
+            # for i in range(1, num_barras + 1):
+            #     pos = i * 25
+            #     if pos < len(dates):  # Asegurarse de no exceder el rango
+            #         plt.axvline(x=dates[pos], color="b", linestyle="--", linewidth=0.8)
+            #         plt.text(dates[pos], max(preds_flat), f'Pred {i}', rotation=90, ha='center', color="blue", fontsize=8)
+
+            # # Personalización del gráfico
+            # plt.title(f"Predicciones vs Valores Reales - Iteración {idx+1}")
+            # plt.xlabel("Fecha")
+            # plt.ylabel("Valor")
+            # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+            # plt.gcf().autofmt_xdate()  # Rotar las etiquetas de fecha
+            # plt.grid(True)
+            # plt.legend()
+
+
+            # # Guardar la figura
+            # plot_filename = os.path.join(save_dir, f"iteracion_{idx+1}.png")
+            # plt.savefig(plot_filename)
+            # plt.close()  # Cerrar la figura para liberar memoria
+
         except:
             tft_predict(tft, val_dataloader)
 
