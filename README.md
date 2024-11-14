@@ -13,6 +13,8 @@
 3. [Key Features](#key-features)
 4. [Project Structure](#project-structure)
 5. [Future Work](#future-work)
+6. [Installation](#installation)
+7. [Common Import Errors and Solutions](#common-import-errors-and-solutions)
 
 ---
 
@@ -31,6 +33,8 @@ The **Temporal Fusion Transformer (TFT)** is a deep learning model designed for 
 - **Rich Feature Integration**: TFTs can incorporate diverse data sources—including historical prices, technical indicators, and macroeconomic variables—capturing a comprehensive view of factors affecting index movements.
 
 ### Variable Types in TFT
+
+![image](https://github.com/user-attachments/assets/28d258c8-8fa6-4a07-b9db-eafbb7112b6c)
 
 To make accurate predictions, TFT models leverage various variable types based on their characteristics and predictability. This structured approach allows the model to treat each type appropriately, enhancing overall prediction accuracy:
 
