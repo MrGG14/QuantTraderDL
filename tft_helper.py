@@ -30,6 +30,7 @@ import itertools
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
+from scipy.ndimage import gaussian_filter1d
 from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error, mean_squared_error
 import pickle
 import warnings
@@ -279,6 +280,25 @@ def random_hyperparameter_search(
                     "Training Time (s)",
                 ]
             )
+# Cargar combinaciones ya evaluadas en un conjunto
+    tried_combinations = set()
+    initial_idx = 0  # Para el ID inicial
+
+    with open(csv_file, mode="r") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            # Crear un tuple con los valores de los hiperparámetros relevantes
+            combination = (
+                float(row["Gradient Clip Val"]),
+                int(row["Hidden Size"]),
+                float(row["Dropout"]),
+                int(row["Hidden Continuous Size"]),
+                int(row["Attention Head Size"]),
+                float(row["Learning Rate"]),
+                str(row["Loss Function"]),
+            )
+            tried_combinations.add(combination)
+            initial_idx = max(initial_idx, int(row["ID"]))
 
     param_keys = list(param_grid.keys())
     param_values = [param_grid[key] for key in param_keys]
@@ -287,6 +307,23 @@ def random_hyperparameter_search(
         # Seleccionar aleatoriamente una combinación de hiperparámetros
         params = {key: random.choice(values) for key, values in zip(param_keys, param_values)}
 
+        # Crear un tuple con la combinación de hiperparámetros actuales
+        current_combination = (
+            params["gradient_clip_val"],
+            params["hidden_size"],
+            params["dropout"],
+            params["hidden_continuous_size"],
+            params["attention_head_size"],
+            params["learning_rate"],
+            params["loss"].__class__.__name__,
+        )
+
+        # Verificar si la combinación ya fue probada
+        if current_combination in tried_combinations:
+            print(f"Combinación ya probada, saltando: {params}")
+            continue  # Saltar esta iteración si la combinación ya existe en el CSV
+        
+        tried_combinations.add(current_combination)
         print(f"\n -------------------------------------------------------- \n Probando combinación aleatoria {idx+1}/{n_iterations}: {params}")
 
         # Medir el tiempo de inicio del entrenamiento
@@ -335,7 +372,7 @@ def random_hyperparameter_search(
                 writer.writerow(
                     [
                         datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        idx + 1,
+                        initial_idx + idx + 1,
                         params["gradient_clip_val"],
                         params["hidden_size"],
                         params["dropout"],
@@ -370,16 +407,17 @@ def random_hyperparameter_search(
             # plt.xticks(ticks=x_ticks, labels=x_labels, rotation=45, ha='right', fontsize=8)
 
             # plt.ylim(bottom=0)
-            plt.title(f"Predicciones vs Valores Reales - Iteración {idx+1}")
+            plt.title(f"Predicciones vs Valores Reales - Iteración {initial_idx + idx+1}")
             plt.xlabel("Fecha")
             plt.ylabel("Valor")
             plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
             plt.gcf().autofmt_xdate()  # Rotar las etiquetas de fecha
             plt.grid(True)
+
             plt.legend()
 
             # Guardar la figura
-            plot_filename = os.path.join(save_dir, f"iteracion_{idx+1}.png")
+            plot_filename = os.path.join(save_dir, f"iteracion_{initial_idx + idx+1}.png")
             plt.savefig(plot_filename)
             plt.close()  # Cerrar la figura para liberar memoria
 
@@ -861,12 +899,16 @@ def investing_preprocessing(df):
     df = df.reset_index(drop=True)
     return df
 
-def add_indicators(df, n_lags, ma_periods):
+def add_indicators(df, ts_indicator_params):
     # añadimos lags
-    lags = buildLaggedFeatures(df, n_lags, ["target"])
+    lags = buildLaggedFeatures(df, ts_indicator_params["n_lags"], ["target"])
     df = pd.concat([df, lags], axis=1)
+    
+    # # Apply gaussian filter to original ts.
+    for sigma in ts_indicator_params["sigma_gaussian_filter"]:
+        df[f'target_smoothed_{sigma}'] = gaussian_filter1d(df['target'].values, sigma=sigma)
 
-    for i in ma_periods:
+    for i in ts_indicator_params["moving_average_windows"]:
         df = add_sma(df, period=i)
         df = add_ema(df, period=i)
 
@@ -1009,7 +1051,7 @@ def add_global_indicators(df, PIB_relevant_countries, date_start, date_end):
     # Realizar el merge usando la columna temporal 'year'
     df = pd.merge(df, worldPIB, on='year', how='left')
     df = df.rename(columns={'Date_x': 'Date'})
-
+    df.drop(columns=['Date_y'], inplace=True)
     # Eliminar la columna temporal 'year' después del merge
     df = df.drop(columns=['year'])
 
@@ -1017,3 +1059,24 @@ def add_global_indicators(df, PIB_relevant_countries, date_start, date_end):
     df = df.bfill()
 
     return df
+
+def add_ts_as_exog(base_df, exog_dfs):
+    """
+    Agrega series temporales de otros DataFrames como variables exógenas en el DataFrame base.
+    
+    Parameters:
+    - base_df (pd.DataFrame): DataFrame base al que se le agregarán las variables exógenas.
+    - exog_dfs (list of pd.DataFrame): Lista de DataFrames con series a agregar como variables exógenas.
+    
+    Returns:
+    - pd.DataFrame: DataFrame base con las series exógenas añadidas.
+    """
+    result_df = base_df.copy()  # Copia el DataFrame base para no modificar el original
+
+    for exog_df in exog_dfs:
+        # Identificar el nombre de la columna de la serie exógena (asumiendo que es la última columna)
+        target_column = exog_df.columns[1]  # La 2 columna se considera como la 'target' exógena
+        # Hacer el merge en la columna 'Date'
+        result_df = result_df.merge(exog_df[['Date', target_column]], on='Date', how='left')
+
+    return result_df
