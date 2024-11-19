@@ -899,7 +899,7 @@ def investing_preprocessing(df):
     df = df.reset_index(drop=True)
     return df
 
-def add_indicators(df, ts_indicator_params):
+def add_indicators(df, ts_indicator_params, categorical_tendency_vars=False):
     # añadimos lags
     lags = buildLaggedFeatures(df, ts_indicator_params["n_lags"], ["target"])
     df = pd.concat([df, lags], axis=1)
@@ -972,9 +972,10 @@ def add_indicators(df, ts_indicator_params):
         'bullish_trend', 'bearish_trend'
     ]
 
+    if categorical_tendency_vars == True:
     # Convertir cada columna binaria a string
-    for col in binary_columns:
-        df[col] = df[col].astype(str)
+        for col in binary_columns:
+            df[col] = df[col].astype(str)
 
     return df
 
