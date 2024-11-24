@@ -191,6 +191,51 @@ def buildLaggedFeatures(s, lag=2, cols=[], dropna=True):
         return res
 
 
+# def make_preds(
+#     train,
+#     test,
+#     model,
+#     encoder_lenght,
+#     test_lenght,
+#     pred_lenght,
+#     quantiles: bool = True,
+# ):
+#     try:
+#         group = model.output_transformer.groups[0]
+#     except:
+#         group = 'month'
+#     if quantiles:
+#         try:  # for Quantileloss
+#             preds = []
+#             preds_data = pd.concat([train[-encoder_lenght:], test])
+#             for i in range(0, test_lenght, pred_lenght):
+#                 new_data = preds_data[i : i + encoder_lenght + pred_lenght]
+#                 new_data.loc[:, group] = new_data.iloc[0, new_data.columns.get_loc(group)]
+#                 new_raw_predictions = model.predict(new_data, mode="raw", return_x=True)
+#                 prediction = []
+#                 for i in range(pred_lenght):
+#                     prediction.append(float(new_raw_predictions.output.prediction[0][i][3]))
+#                 preds.append(prediction)
+#         except:  # for MQF2DistributionLoss
+#             preds = []
+#             preds_data = pd.concat([train[-encoder_lenght:], test])
+#             for i in range(0, test_lenght, pred_lenght):
+#                 new_data = preds_data[i : i + encoder_lenght + pred_lenght]
+#                 new_data.loc[:, group] = new_data.iloc[0, new_data.columns.get_loc(group)]
+#                 prediction = model.to_prediction(new_raw_predictions.output)[0].flatten().tolist()
+#                 preds.append(prediction)
+#     else:
+#         preds = []
+#         preds_data = pd.concat([train[-encoder_lenght:], test])
+#         for i in range(0, test_lenght, pred_lenght):
+#             new_data = preds_data[i : i + encoder_lenght + pred_lenght]
+#             new_data.loc[:, group] = new_data.iloc[0, new_data.columns.get_loc(group)]
+#             new_raw_predictions = model.predict(new_data, mode="raw", return_x=True)
+#             prediction = new_raw_predictions.output.prediction[0].flatten().tolist()
+#             preds.append(prediction)
+
+#     return preds
+
 def make_preds(
     train,
     test,
@@ -199,43 +244,45 @@ def make_preds(
     test_lenght,
     pred_lenght,
     quantiles: bool = True,
+    step_size = 1,
 ):
-    try:
-        group = model.output_transformer.groups[0]
-    except:
-        group = 'month'
-    if quantiles:
-        try:  # for Quantileloss
-            preds = []
-            preds_data = pd.concat([train[-encoder_lenght:], test])
-            for i in range(0, test_lenght, pred_lenght):
-                new_data = preds_data[i : i + encoder_lenght + pred_lenght]
-                new_data.loc[:, group] = new_data.iloc[0, new_data.columns.get_loc(group)]
-                new_raw_predictions = model.predict(new_data, mode="raw", return_x=True)
-                prediction = []
-                for i in range(pred_lenght):
-                    prediction.append(float(new_raw_predictions.output.prediction[0][i][3]))
-                preds.append(prediction)
-        except:  # for MQF2DistributionLoss
-            preds = []
-            preds_data = pd.concat([train[-encoder_lenght:], test])
-            for i in range(0, test_lenght, pred_lenght):
-                new_data = preds_data[i : i + encoder_lenght + pred_lenght]
-                new_data.loc[:, group] = new_data.iloc[0, new_data.columns.get_loc(group)]
-                prediction = model.to_prediction(new_raw_predictions.output)[0].flatten().tolist()
-                preds.append(prediction)
-    else:
-        preds = []
-        preds_data = pd.concat([train[-encoder_lenght:], test])
-        for i in range(0, test_lenght, pred_lenght):
-            new_data = preds_data[i : i + encoder_lenght + pred_lenght]
-            new_data.loc[:, group] = new_data.iloc[0, new_data.columns.get_loc(group)]
-            new_raw_predictions = model.predict(new_data, mode="raw", return_x=True)
-            prediction = new_raw_predictions.output.prediction[0].flatten().tolist()
-            preds.append(prediction)
+    # Identificar el grupo relevante
+    group = getattr(model.output_transformer, "groups", ["month"])[0]
 
-    return preds
+    # Combinar los datos de entrenamiento y prueba
+    preds_data = pd.concat([train[-encoder_lenght:], test])
+    batch_preds = []  # Para predicciones batch
+    step_preds = []  # Para predicciones timestep=1
 
+    # Función auxiliar para obtener predicciones
+    def predict_batch(data):
+        raw_predictions = model.predict(data, mode="raw", return_x=True)
+        if quantiles:
+            try:  # Para QuantileLoss
+                return [float(raw_predictions.output.prediction[0][j][3]) for j in range(pred_lenght)]
+            except:  # Para MQF2DistributionLoss
+                return model.to_prediction(raw_predictions.output)[0].flatten().tolist()
+        else:  # Predicción puntual
+            return raw_predictions.output.prediction[0].flatten().tolist()
+
+    # Generar predicciones en lotes (batch mode)
+    for i in range(0, test_lenght, pred_lenght):
+        # Preparar los datos para el lote actual
+        new_data = preds_data[i : i + encoder_lenght + pred_lenght].copy()
+        new_data.loc[:, group] = new_data.iloc[0, new_data.columns.get_loc(group)]
+
+        # Obtener y almacenar predicciones
+        batch_preds.append(predict_batch(new_data))
+
+    # Generar predicciones timestep=n
+    for i in range(0, test_lenght - pred_lenght, step_size):
+        # Preparar los datos usando la ventana actual
+        new_data = preds_data[i : i + encoder_lenght + pred_lenght].copy()
+        new_data.loc[:, group] = new_data.iloc[0, new_data.columns.get_loc(group)]
+
+        # Obtener y almacenar predicciones
+        step_preds.append(predict_batch(new_data))
+    return batch_preds, step_preds
 
 def random_hyperparameter_search(
     data,
@@ -277,6 +324,7 @@ def random_hyperparameter_search(
                     "Test MAE",
                     "Test MAPE",
                     "Test RMSE",
+                    "Test MAE ReEx", # Mean Absolute Error recalculated for predictions re-executed before reaching the final timestep
                     "Training Time (s)",
                 ]
             )
@@ -342,7 +390,8 @@ def random_hyperparameter_search(
         
         # Generar predicciones en los datos de test usando los parámetros actuales. 
         try:
-            preds = make_preds(
+            print(1)
+            batch_preds, step_preds = make_preds(
                 train=data,
                 test=test,
                 model=tft,
@@ -350,15 +399,25 @@ def random_hyperparameter_search(
                 test_lenght=params["test_len"],
                 pred_lenght=params["pred_len"],
                 quantiles=True if isinstance(params["loss"], QuantileLoss) else False,
-            )
-
+                step_size=params["prediction_ReEx_step"],
+        )
+            print(2)
+            ##### ReEx PREDICTION METRICS #########
+            # Extraer ventanas correspondientes del test
+            test_ReEx = [
+                test.iloc[i : i + params["pred_len"]].values.tolist()  # Ajusta según la estructura del test
+                for i in range(0, params["test_len"] - params["pred_len"], params["prediction_ReEx_step"])  # Usando step_size=5
+            ]
+            test_mae_ReEx = mean_absolute_error(test_ReEx, step_preds)
+            print(3)
+            ###### BATCH PREDICTION METRICS #########
             # Calcular métricas de error en test
-            preds_flat = [item for sublist in preds for item in sublist]
+            preds_flat = [item for sublist in batch_preds for item in sublist]
             real_vals = test["target"].to_list()
             test_mae = mean_absolute_error(real_vals, preds_flat)
             test_mape = mean_absolute_percentage_error(real_vals, preds_flat)
             test_rmse = mean_squared_error(real_vals, preds_flat, squared=False)
-
+            print(4)
             # Verificar si la pérdida es la mejor hasta ahora
             if val_loss is not None and val_loss < best_val_loss:
                 best_val_loss = val_loss
@@ -385,10 +444,11 @@ def random_hyperparameter_search(
                         test_mae,
                         test_mape,
                         test_rmse,
+                        test_mae_ReEx,
                         training_time,
                     ]
                 )
-
+            print(5)
             # Crear y guardar el gráfico de esta iteración
             dates = test["Date"].to_list()
             plt.figure(figsize=(10, 6))
@@ -402,11 +462,6 @@ def random_hyperparameter_search(
                     plt.axvline(x=dates[pos], color="b", linestyle="--", linewidth=0.8)
                     plt.text(dates[pos] - timedelta(days=1), max(preds_flat)*1.02, f'Pred {i}', rotation=90, ha='left', color="blue", fontsize=8)
 
-            # x_ticks = [dates[i * 25 - 1] for i in range(1, num_barras + 1)]
-            # x_labels = [f'Preds month {i}' for i in range(1, num_barras + 1)]
-            # plt.xticks(ticks=x_ticks, labels=x_labels, rotation=45, ha='right', fontsize=8)
-
-            # plt.ylim(bottom=0)
             plt.title(f"Predicciones vs Valores Reales - Iteración {initial_idx + idx+1}")
             plt.xlabel("Fecha")
             plt.ylabel("Valor")
@@ -420,37 +475,6 @@ def random_hyperparameter_search(
             plot_filename = os.path.join(save_dir, f"iteracion_{initial_idx + idx+1}.png")
             plt.savefig(plot_filename)
             plt.close()  # Cerrar la figura para liberar memoria
-
-
-
-            # # Añadir barras verticales discontinuas cada 25 valores y etiquetarlas
-            # dates = test["Date"].to_list()
-
-            #         # Gráfica de las predicciones y los valores reales
-            # plt.plot(dates, preds_flat, color="r", label="Predicciones", marker="o", linestyle="--")
-            # plt.plot(dates, real_vals, color="g", label="Valores Reales", marker="x", linestyle="-")
-
-            # num_barras = len(dates) // params["pred_len"]
-            # for i in range(1, num_barras + 1):
-            #     pos = i * 25
-            #     if pos < len(dates):  # Asegurarse de no exceder el rango
-            #         plt.axvline(x=dates[pos], color="b", linestyle="--", linewidth=0.8)
-            #         plt.text(dates[pos], max(preds_flat), f'Pred {i}', rotation=90, ha='center', color="blue", fontsize=8)
-
-            # # Personalización del gráfico
-            # plt.title(f"Predicciones vs Valores Reales - Iteración {idx+1}")
-            # plt.xlabel("Fecha")
-            # plt.ylabel("Valor")
-            # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-            # plt.gcf().autofmt_xdate()  # Rotar las etiquetas de fecha
-            # plt.grid(True)
-            # plt.legend()
-
-
-            # # Guardar la figura
-            # plot_filename = os.path.join(save_dir, f"iteracion_{idx+1}.png")
-            # plt.savefig(plot_filename)
-            # plt.close()  # Cerrar la figura para liberar memoria
 
         except:
             tft_predict(tft, val_dataloader)
