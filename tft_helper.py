@@ -1061,23 +1061,55 @@ def add_global_indicators(df, PIB_relevant_countries, date_start, date_end):
 
     return df
 
-def add_ts_as_exog(base_df, exog_dfs):
+def create_combined_ts_df(target_file, exog_files):
     """
-    Agrega series temporales de otros DataFrames como variables exógenas en el DataFrame base.
-    
+    Combines a target time series with multiple exogenous time series into a single DataFrame.
+
+    This function takes a target file containing the main time series and a list of files 
+    with exogenous time series. It preprocesses all input files, renames the target column 
+    of each exogenous series, and merges them with the target series based on the 'Date' column.
+
     Parameters:
-    - base_df (pd.DataFrame): DataFrame base al que se le agregarán las variables exógenas.
-    - exog_dfs (list of pd.DataFrame): Lista de DataFrames con series a agregar como variables exógenas.
-    
+    ----------
+    target_file : str
+        The name of the file containing the target time series (excluding the file extension).
+    exog_files : list of str
+        A list of file names containing the exogenous time series (excluding file extensions).
+
     Returns:
-    - pd.DataFrame: DataFrame base con las series exógenas añadidas.
+    -------
+    pandas.DataFrame
+        A DataFrame that combines the target time series and all provided exogenous series. 
+        The resulting DataFrame includes the 'Date' column, the target series, and each 
+        exogenous series as separate columns.
+
+    Example:
+    -------
+    target_file = 'S&P500'
+    exog_files = ['Nasdaq', 'IBEX35', 'EUStoxx50', 'DowJones', 'BTC']
+    df = combine_target_and_exog_ts(target_file, exog_files)
+
+    Notes:
+    -----
+    - The function assumes all input files are in the './data/' directory and are in CSV format.
+    - The preprocessing steps applied are handled by `load_file` and `investing_preprocessing` functions.
+    - The merge is performed on the 'Date' column using a left join, ensuring that all dates in the 
+      target series are preserved, even if some exogenous series are missing values for certain dates.
     """
-    result_df = base_df.copy()  # Copia el DataFrame base para no modificar el original
 
+    exog_dfs = []
+    for exog_file in exog_files:
+        df = load_file(file_name=exog_file, path="./data/", ftype="csv")
+        df = investing_preprocessing(df)
+        df = df.rename(columns={"target": f"exog_{exog_file}"})
+        exog_dfs.append(df)
+
+    target_df = load_file(file_name=target_file, path="./data/", ftype="csv")
+    target_df = investing_preprocessing(target_df)
+
+    result_df = target_df.copy()  # Copy the base DataFrame to avoid modifying the original
     for exog_df in exog_dfs:
-        # Identificar el nombre de la columna de la serie exógena (asumiendo que es la última columna)
-        target_column = exog_df.columns[1]  # La 2 columna se considera como la 'target' exógena
-        # Hacer el merge en la columna 'Date'
+        target_column = exog_df.columns[1]  # The 2nd column is treated as the exogenous 'target'
+        # Merge on the 'Date' column
         result_df = result_df.merge(exog_df[['Date', target_column]], on='Date', how='left')
-
     return result_df
