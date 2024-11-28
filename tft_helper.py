@@ -692,9 +692,27 @@ def add_williams_r(df, period=14):
 
 
 def clean_numeric_column(column):
-    return column.str.replace(".", "", regex=False).str.replace(",", ".").astype(float)
+    """
+    Limpia y convierte una columna con valores numéricos en formatos variados 
+    a floats estandarizados.
+    """
+    def clean_value(value):
+        if isinstance(value, str):
+            # Si contiene un punto seguido de una coma, es formato europeo (5.998,70)
+            if '.' in value and ',' in value and value.index('.') < value.index(','):
+                value = value.replace('.', '').replace(',', '.')
+            # Si contiene una coma seguida de un punto, es formato americano (5,998.70)
+            elif ',' in value and '.' in value and value.index(',') < value.index('.'):
+                value = value.replace(',', '')
+            # Si solo contiene coma, probablemente sea europeo (5,998 → 5998)
+            elif ',' in value and '.' not in value:
+                value = value.replace(',', '.')
+            # Si solo contiene punto, probablemente sea americano (5.998 → 5998)
+            elif '.' in value and ',' not in value:
+                value = value.replace('.', '')
+        return float(value)
 
-
+    return column.map(clean_value)
 # Función para limpiar la columna de volumen
 def clean_volume_column(column):
     column = column.str.replace("B", "e9", regex=False).str.replace("M", "e6", regex=False)
@@ -863,9 +881,13 @@ def investing_preprocessing(df):
     
     # Formatear la columna de fechas
     try:
+
         df["Date"] = pd.to_datetime(df["Date"], format="%d.%m.%Y")
+        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')  # Convierte las fechas
+        df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
     except:
-        pass
+        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')  # Convierte las fechas
+        df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
     
     # Aplicar las transformaciones numéricas
     df["Price"] = clean_numeric_column(df["Price"])
