@@ -888,7 +888,7 @@ def investing_preprocessing(df):
     except:
         df['Date'] = pd.to_datetime(df['Date'], errors='coerce')  # Convierte las fechas
         df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
-    
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
     # Aplicar las transformaciones numéricas
     df["Price"] = clean_numeric_column(df["Price"])
     df["Open"] = clean_numeric_column(df["Open"])
