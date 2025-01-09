@@ -927,8 +927,9 @@ def add_indicators(df, ts_indicator_params, categorical_tendency_vars=False):
     df = pd.concat([df, lags], axis=1)
     
     # # Apply gaussian filter to original ts.
-    for sigma in ts_indicator_params["sigma_gaussian_filter"]:
-        df[f'target_smoothed_{sigma}'] = gaussian_filter1d(df['target'].values, sigma=sigma)
+    if "sigma_gaussian_filter" in ts_indicator_params:      
+        for sigma in ts_indicator_params["sigma_gaussian_filter"]:
+            df[f'target_smoothed_{sigma}'] = gaussian_filter1d(df['target'].values, sigma=sigma)
 
     for i in ts_indicator_params["moving_average_windows"]:
         df = add_sma(df, period=i)
