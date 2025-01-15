@@ -70,8 +70,8 @@ The TFT model in QuantTrader-TFT leverages these variables to predict trends in 
 - **Data**: Collection and preparation of historical stock market data for training the model.
 - **Model**: Implementation of the Temporal Fusion Transformer (TFT) model for multi-horizon time series forecasting.
 - **Prediction**: Scripts for generating index price forecasts using trained models.
-- **Portfolio Construction**: Code to construct an optimized portfolio based on model predictions, balancing risk and potential returns.
-- **Risk Analysis**: Evaluation of forecasted trends to assess risk levels associated with different indices.
+- **Portfolio Construction** (Future): Code to construct an optimized portfolio based on model predictions, balancing risk and potential returns.
+- **Risk Analysis** (Future): Evaluation of forecasted trends to assess risk levels associated with different indices.
 
 ---
 
