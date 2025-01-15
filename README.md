@@ -1,4 +1,4 @@
-# QuantTrader-TFT
+# QuantTrader-TFT: Forecasting Financial Indices with Temporal Fusion Transformers for Smarter Investments
 
 **QuantTrader-TFT** is a project focused on predicting the prices of major stock market indices—such as the S&P 500, Nasdaq, IBEX 35, Dow Jones, and EURO STOXX 50—using Temporal Fusion Transformer (TFT) models. The goal is to create an investment portfolio that maximizes returns while minimizing risk, leveraging the predictive capabilities of the TFT models.
 
