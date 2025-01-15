@@ -75,6 +75,31 @@ The TFT model in QuantTrader-TFT leverages these variables to predict trends in 
 
 ---
 
+## Results
+
+The results obtained are surprisingly good given the complexity of the problem and the limited computational resources. As an example we can see the top 10 models found for the SyP500 index with their respective errors.
+
+|   ID |   Test MAE |   Gradient Clip Val |   Hidden Size |   Dropout |   Hidden Continuous Size |   Attention Head Size |   Learning Rate | Loss Function   |   Epochs |
+|-----:|-----------:|--------------------:|--------------:|----------:|-------------------------:|----------------------:|----------------:|:----------------|---------:|
+|    6 |    53.1535 |                0.01 |             8 |       0.1 |                       64 |                    16 |           0.005 | QuantileLoss    |       50 |
+|   52 |    79.7303 |                0.01 |            16 |       0.2 |                       64 |                     4 |           0.005 | QuantileLoss    |       50 |
+|   18 |    82.5422 |                0.03 |            32 |       0.3 |                      128 |                     4 |           0.01  | QuantileLoss    |       50 |
+|   74 |    83.6289 |                0.01 |             8 |       0.3 |                       64 |                     8 |           0.005 | QuantileLoss    |       50 |
+|   24 |    88.3821 |                0.03 |            16 |       0.2 |                      128 |                     4 |           0.005 | QuantileLoss    |       50 |
+|   13 |    92.4417 |                0.03 |             8 |       0.2 |                      128 |                    16 |           0.01  | QuantileLoss    |       50 |
+|   10 |    92.6973 |                0.05 |            16 |       0.3 |                       64 |                     8 |           0.01  | QuantileLoss    |       50 |
+|   28 |    92.9912 |                0.03 |            32 |       0.3 |                       16 |                     4 |           0.01  | QuantileLoss    |       50 |
+|   25 |    93.8614 |                0.01 |             8 |       0.3 |                       64 |                    16 |           0.03  | QuantileLoss    |       50 |
+|   51 |    96.5877 |                0.01 |            16 |       0.3 |                      128 |                     8 |           0.005 | QuantileLoss    |       50 |
+
+The best result obtained is with a mean absolute error (MAE) of 54.153 with test data. This means that if we had used this trained model to predict the price of the 25 following days over 5 months we would have achieved predictions that deviate, on average, by only 54.153$ from the actual values. This level of accuracy demonstrates the model's ability to effectively capture the underlying patterns of the SyP500 index, despite the inherent complexity of financial time series data.
+
+Such performance is noteworthy given the limited computational resources and the constraints imposed on model hyperparameters. Furthermore, these results highlight the potential of employing advanced techniques like attention mechanisms
+
+We can see the predictions during those 5 months:
+![iteracion_6](https://github.com/user-attachments/assets/3faf9b0c-b0f8-4411-91d2-c523965146dc)
+
+
 ## Future Work
 
 Future plans for QuantTrader-TFT include:
