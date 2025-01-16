@@ -65,13 +65,26 @@ The TFT model in QuantTrader-TFT leverages these variables to predict trends in 
 
 ---
 
-## Project Structure
+## Repo Structure
 
-- **Data**: Collection and preparation of historical stock market data for training the model.
-- **Model**: Implementation of the Temporal Fusion Transformer (TFT) model for multi-horizon time series forecasting.
-- **Prediction**: Scripts for generating index price forecasts using trained models.
-- **Portfolio Construction** (Future): Code to construct an optimized portfolio based on model predictions, balancing risk and potential returns.
-- **Risk Analysis** (Future): Evaluation of forecasted trends to assess risk levels associated with different indices.
+- **`Data/`**  
+  Collection, cleaning, and preparation of historical stock market data, forming the foundation for training predictive models.  
+
+- **`Plots/`**  
+  Visualizations of model predictions generated during hyperparameter optimization, providing insights into performance across different configurations.  
+
+- **`Results/`**  
+  Detailed experimental results, including evaluation metrics and the hyperparameter configurations used, ensuring reproducibility and in-depth analysis.  
+
+- **`Alternatives/`**  
+  Alternative modeling approaches, such as Long Short-Term Memory (LSTM) networks and variations of the Temporal Fusion Transformer (TFT), to explore diverse forecasting methodologies.  
+
+- **`trading_multiseries_exog_gauss`**  
+  Main script for generating index price predictions using the Temporal Fusion Transformer (TFT) model for multi-horizon time series forecasting.  
+
+- **`tradingBot_RL`**  
+  Primary script for training and evaluating a reinforcement learning-based trading bot, enabling intelligent decision-making for trading strategies.  
+
 
 ---
 
