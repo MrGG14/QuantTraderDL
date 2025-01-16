@@ -82,7 +82,7 @@ The TFT model in QuantTrader-TFT leverages these variables to predict trends in 
 - **`trading_multiseries_exog_gauss`**  
   Main script for generating index price predictions using the Temporal Fusion Transformer (TFT) model for multi-horizon time series forecasting.  
 
-- **`tradingBot_RL`**  
+- **`tradingBot_RL` (new)**  
   Primary script for training and evaluating a reinforcement learning-based trading bot, enabling intelligent decision-making for trading strategies.  
 
 
