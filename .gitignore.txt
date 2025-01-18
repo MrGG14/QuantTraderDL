@@ -1,0 +1,8 @@
+# Ignorar la carpeta '0ld'
+0ld/
+
+# Ignorar la carpeta 'lightning_logs'
+lightning_logs/
+
+# Ignorar la carpeta '__pycache__'
+__pycache__/

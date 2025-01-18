@@ -1,6 +1,8 @@
 import scipy.signal.signaltools
 import numpy as np
 from datetime import timedelta
+
+
 def _centered(arr, newsize):
     # Return the center newsize portion of the array.
     newsize = np.asarray(newsize)
@@ -86,7 +88,7 @@ def tft_trainer(
     model_path=None,
     **kwargs,
 ):
-    
+
     torch.backends.cudnn.benchmark = True
 
     # Filtrar los callbacks que no son None
@@ -148,7 +150,6 @@ def tft_predict(tft, data, n_preds=None):
     return predictions
 
 
-
 def save_exp_results(exp_path, tft_params, model_days, n_prev_hours, group, val_loss, epochs):
     tft_exps = pd.read_excel(exp_path)
 
@@ -203,7 +204,7 @@ def make_preds(
     try:
         group = model.output_transformer.groups[0]
     except:
-        group = 'month'
+        group = "month"
     if quantiles:
         try:  # for Quantileloss
             preds = []
@@ -280,7 +281,7 @@ def random_hyperparameter_search(
                     "Training Time (s)",
                 ]
             )
-# Cargar combinaciones ya evaluadas en un conjunto
+    # Cargar combinaciones ya evaluadas en un conjunto
     tried_combinations = set()
     initial_idx = 0  # Para el ID inicial
 
@@ -322,9 +323,11 @@ def random_hyperparameter_search(
         if current_combination in tried_combinations:
             print(f"Combinación ya probada, saltando: {params}")
             continue  # Saltar esta iteración si la combinación ya existe en el CSV
-        
+
         tried_combinations.add(current_combination)
-        print(f"\n -------------------------------------------------------- \n Probando combinación aleatoria {idx+1}/{n_iterations}: {params}")
+        print(
+            f"\n -------------------------------------------------------- \n Probando combinación aleatoria {idx+1}/{n_iterations}: {params}"
+        )
 
         # Medir el tiempo de inicio del entrenamiento
         start_time = datetime.now()
@@ -338,9 +341,9 @@ def random_hyperparameter_search(
         end_time = datetime.now()
         training_time = (end_time - start_time).total_seconds()
         minutes, seconds = divmod(int(training_time), 60)
-        print(f'Training time: {minutes}m {seconds}s')       
-        
-        # Generar predicciones en los datos de test usando los parámetros actuales. 
+        print(f"Training time: {minutes}m {seconds}s")
+
+        # Generar predicciones en los datos de test usando los parámetros actuales.
         try:
             preds = make_preds(
                 train=data,
@@ -400,7 +403,15 @@ def random_hyperparameter_search(
                 pos = i * 25
                 if pos < len(dates):  # Asegurarse de no exceder el rango
                     plt.axvline(x=dates[pos], color="b", linestyle="--", linewidth=0.8)
-                    plt.text(dates[pos] - timedelta(days=1), max(preds_flat)*1.02, f'Pred {i}', rotation=90, ha='left', color="blue", fontsize=8)
+                    plt.text(
+                        dates[pos] - timedelta(days=1),
+                        max(preds_flat) * 1.02,
+                        f"Pred {i}",
+                        rotation=90,
+                        ha="left",
+                        color="blue",
+                        fontsize=8,
+                    )
 
             # x_ticks = [dates[i * 25 - 1] for i in range(1, num_barras + 1)]
             # x_labels = [f'Preds month {i}' for i in range(1, num_barras + 1)]
@@ -420,8 +431,6 @@ def random_hyperparameter_search(
             plot_filename = os.path.join(save_dir, f"iteracion_{initial_idx + idx+1}.png")
             plt.savefig(plot_filename)
             plt.close()  # Cerrar la figura para liberar memoria
-
-
 
             # # Añadir barras verticales discontinuas cada 25 valores y etiquetarlas
             # dates = test["Date"].to_list()
@@ -446,7 +455,6 @@ def random_hyperparameter_search(
             # plt.grid(True)
             # plt.legend()
 
-
             # # Guardar la figura
             # plot_filename = os.path.join(save_dir, f"iteracion_{idx+1}.png")
             # plt.savefig(plot_filename)
@@ -456,10 +464,8 @@ def random_hyperparameter_search(
             tft_predict(tft, val_dataloader)
 
     print(
-            f"Mejores hiperparámetros: {best_params} con una pérdida de validación de {best_val_loss:.4f}"
-        )
-
-    
+        f"Mejores hiperparámetros: {best_params} con una pérdida de validación de {best_val_loss:.4f}"
+    )
 
     return best_model, best_params, best_val_loss
 
@@ -693,26 +699,29 @@ def add_williams_r(df, period=14):
 
 def clean_numeric_column(column):
     """
-    Limpia y convierte una columna con valores numéricos en formatos variados 
+    Limpia y convierte una columna con valores numéricos en formatos variados
     a floats estandarizados.
     """
+
     def clean_value(value):
         if isinstance(value, str):
             # Si contiene un punto seguido de una coma, es formato europeo (5.998,70)
-            if '.' in value and ',' in value and value.index('.') < value.index(','):
-                value = value.replace('.', '').replace(',', '.')
+            if "." in value and "," in value and value.index(".") < value.index(","):
+                value = value.replace(".", "").replace(",", ".")
             # Si contiene una coma seguida de un punto, es formato americano (5,998.70)
-            elif ',' in value and '.' in value and value.index(',') < value.index('.'):
-                value = value.replace(',', '')
+            elif "," in value and "." in value and value.index(",") < value.index("."):
+                value = value.replace(",", "")
             # Si solo contiene coma, probablemente sea europeo (5,998 → 5998)
-            elif ',' in value and '.' not in value:
-                value = value.replace(',', '.')
+            elif "," in value and "." not in value:
+                value = value.replace(",", ".")
             # Si solo contiene punto, probablemente sea americano (5.998 → 5998)
-            elif '.' in value and ',' not in value:
-                value = value.replace('.', '')
+            elif "." in value and "," not in value:
+                value = value.replace(".", "")
         return float(value)
 
     return column.map(clean_value)
+
+
 # Función para limpiar la columna de volumen
 def clean_volume_column(column):
     column = column.str.replace("B", "e9", regex=False).str.replace("M", "e6", regex=False)
@@ -771,7 +780,7 @@ def load_file(
             usecols=usecols,
             dtype=dtypes,
             index_col=index_col,
-            on_bad_lines='skip',
+            on_bad_lines="skip",
             skiprows=kwargs.get("skiprows", 0),
             skipfooter=kwargs.get("skipfooter", 0),
             encoding=kwargs.get("encoding", "utf-8"),
@@ -856,6 +865,7 @@ def save_file(
         with open(os.path.join(path, f"{file_name}.{ftype}"), "wb") as f:
             pickle.dump(data, f)
 
+
 def investing_preprocessing(df):
     # Detectar el idioma de las columnas y renombrarlas si es necesario
     if "Fecha" in df.columns:
@@ -866,7 +876,7 @@ def investing_preprocessing(df):
             "Máximo": "High",
             "Mínimo": "Low",
             "Vol.": "Vol.",
-            "% var.": "Change %"
+            "% var.": "Change %",
         }
     elif "Date" in df.columns:
         column_map = {}  # No se necesita mapeo, ya está en inglés
@@ -875,32 +885,32 @@ def investing_preprocessing(df):
 
     # Renombrar columnas si es necesario
     df = df.rename(columns=column_map)
-    
+
     # Revertir el DataFrame y resetear índice
     df = df[::-1].reset_index(drop=True)
-    
+
     # Formatear la columna de fechas
     try:
 
         df["Date"] = pd.to_datetime(df["Date"], format="%d.%m.%Y")
-        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')  # Convierte las fechas
-        df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
+        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")  # Convierte las fechas
+        df["Date"] = df["Date"].dt.strftime("%Y-%m-%d")
     except:
-        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')  # Convierte las fechas
-        df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
-    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")  # Convierte las fechas
+        df["Date"] = df["Date"].dt.strftime("%Y-%m-%d")
+    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
     # Aplicar las transformaciones numéricas
     df["Price"] = clean_numeric_column(df["Price"])
     df["Open"] = clean_numeric_column(df["Open"])
     df["High"] = clean_numeric_column(df["High"])
     df["Low"] = clean_numeric_column(df["Low"])
-    
+
     # Limpiar columna de volumen si está disponible
     try:
         df["Vol."] = clean_volume_column(df["Vol."])
     except:
         df = df.drop(columns=["Vol."])
-        print('Dataset does not contain volume data.')
+        print("Dataset does not contain volume data.")
 
     # Limpiar columna de cambio porcentual
     df["Change %"] = clean_percentage_column(df["Change %"])
@@ -917,19 +927,20 @@ def investing_preprocessing(df):
             "Open": "open",
         }
     )
-    
+
     df = df.reset_index(drop=True)
     return df
+
 
 def add_indicators(df, ts_indicator_params, categorical_tendency_vars=False):
     # añadimos lags
     lags = buildLaggedFeatures(df, ts_indicator_params["n_lags"], ["target"])
     df = pd.concat([df, lags], axis=1)
-    
+
     # # Apply gaussian filter to original ts.
-    if "sigma_gaussian_filter" in ts_indicator_params:      
+    if "sigma_gaussian_filter" in ts_indicator_params:
         for sigma in ts_indicator_params["sigma_gaussian_filter"]:
-            df[f'target_smoothed_{sigma}'] = gaussian_filter1d(df['target'].values, sigma=sigma)
+            df[f"target_smoothed_{sigma}"] = gaussian_filter1d(df["target"].values, sigma=sigma)
 
     for i in ts_indicator_params["moving_average_windows"]:
         df = add_sma(df, period=i)
@@ -941,7 +952,7 @@ def add_indicators(df, ts_indicator_params, categorical_tendency_vars=False):
     df = add_atr(df)
 
     # Agregar CCI con diferentes períodos
-    for i in [10,20]:
+    for i in [10, 20]:
         df = add_cci(df, period=i)
 
     # Agregar ROC con diferentes períodos
@@ -958,49 +969,86 @@ def add_indicators(df, ts_indicator_params, categorical_tendency_vars=False):
 
     # Crear variables binarias para identificar tendencias
     # 1. Tendencia alcista/bajista usando medias móviles
-    df['bullish_sma_50_200'] = (df['SMA_50'] > df['SMA_200']).astype(int)  # 1 si la SMA de 50 > SMA de 200
-    df['bearish_sma_50_200'] = (df['SMA_50'] < df['SMA_200']).astype(int)  # 1 si la SMA de 50 < SMA de 200
+    df["bullish_sma_50_200"] = (df["SMA_50"] > df["SMA_200"]).astype(
+        int
+    )  # 1 si la SMA de 50 > SMA de 200
+    df["bearish_sma_50_200"] = (df["SMA_50"] < df["SMA_200"]).astype(
+        int
+    )  # 1 si la SMA de 50 < SMA de 200
 
     # 2. Tendencia alcista/bajista usando RSI
-    df['bullish_rsi'] = (df['RSI_14'] < 30).astype(int)  # 1 si RSI es menor que 30 (sobreventa)
-    df['bearish_rsi'] = (df['RSI_14'] > 70).astype(int)  # 1 si RSI es mayor que 70 (sobrecompra)
+    df["bullish_rsi"] = (df["RSI_14"] < 30).astype(int)  # 1 si RSI es menor que 30 (sobreventa)
+    df["bearish_rsi"] = (df["RSI_14"] > 70).astype(int)  # 1 si RSI es mayor que 70 (sobrecompra)
 
     # 3. Tendencia alcista/bajista usando Bandas de Bollinger
-    df['bullish_bollinger'] = (df['target'] < df['Bollinger_Lower_20']).astype(int)  # 1 si el precio está por debajo de la banda inferior
-    df['bearish_bollinger'] = (df['target'] > df['Bollinger_Upper_20']).astype(int)  # 1 si el precio está por encima de la banda superior
+    df["bullish_bollinger"] = (df["target"] < df["Bollinger_Lower_20"]).astype(
+        int
+    )  # 1 si el precio está por debajo de la banda inferior
+    df["bearish_bollinger"] = (df["target"] > df["Bollinger_Upper_20"]).astype(
+        int
+    )  # 1 si el precio está por encima de la banda superior
 
     # 4. Tendencia alcista/bajista usando MACD
-    df['bullish_macd'] = (df['MACD'] > df['Signal_Line']).astype(int)  # 1 si MACD es mayor que la señal
-    df['bearish_macd'] = (df['MACD'] < df['Signal_Line']).astype(int)  # 1 si MACD es menor que la señal
+    df["bullish_macd"] = (df["MACD"] > df["Signal_Line"]).astype(
+        int
+    )  # 1 si MACD es mayor que la señal
+    df["bearish_macd"] = (df["MACD"] < df["Signal_Line"]).astype(
+        int
+    )  # 1 si MACD es menor que la señal
 
     # 5. Tendencia alcista/bajista usando ATR
-    df['bullish_atr'] = (df['ATR_14'] > df['ATR_14'].rolling(window=14).mean()).astype(int)  # 1 si ATR actual es mayor que la media
-    df['bearish_atr'] = (df['ATR_14'] < df['ATR_14'].rolling(window=14).mean()).astype(int)  # 1 si ATR actual es menor que la media
+    df["bullish_atr"] = (df["ATR_14"] > df["ATR_14"].rolling(window=14).mean()).astype(
+        int
+    )  # 1 si ATR actual es mayor que la media
+    df["bearish_atr"] = (df["ATR_14"] < df["ATR_14"].rolling(window=14).mean()).astype(
+        int
+    )  # 1 si ATR actual es menor que la media
 
     # Ejemplo de combinación de señales para una tendencia general
-    df['bullish_trend'] = ((df['bullish_sma_50_200'] + df['bullish_rsi'] + 
-                            df['bullish_bollinger'] + df['bullish_macd'] + 
-                            df['bullish_atr']) > 2).astype(int)
+    df["bullish_trend"] = (
+        (
+            df["bullish_sma_50_200"]
+            + df["bullish_rsi"]
+            + df["bullish_bollinger"]
+            + df["bullish_macd"]
+            + df["bullish_atr"]
+        )
+        > 2
+    ).astype(int)
 
-    df['bearish_trend'] = ((df['bearish_sma_50_200'] + df['bearish_rsi'] + 
-                            df['bearish_bollinger'] + df['bearish_macd'] + 
-                            df['bearish_atr']) >= 3).astype(int)
+    df["bearish_trend"] = (
+        (
+            df["bearish_sma_50_200"]
+            + df["bearish_rsi"]
+            + df["bearish_bollinger"]
+            + df["bearish_macd"]
+            + df["bearish_atr"]
+        )
+        >= 3
+    ).astype(int)
 
     binary_columns = [
-        'bullish_sma_50_200', 'bearish_sma_50_200', 
-        'bullish_rsi', 'bearish_rsi', 
-        'bullish_bollinger', 'bearish_bollinger', 
-        'bullish_macd', 'bearish_macd', 
-        'bullish_atr', 'bearish_atr', 
-        'bullish_trend', 'bearish_trend'
+        "bullish_sma_50_200",
+        "bearish_sma_50_200",
+        "bullish_rsi",
+        "bearish_rsi",
+        "bullish_bollinger",
+        "bearish_bollinger",
+        "bullish_macd",
+        "bearish_macd",
+        "bullish_atr",
+        "bearish_atr",
+        "bullish_trend",
+        "bearish_trend",
     ]
 
     if categorical_tendency_vars == True:
-    # Convertir cada columna binaria a string
+        # Convertir cada columna binaria a string
         for col in binary_columns:
             df[col] = df[col].astype(str)
 
     return df
+
 
 def add_global_indicators(df, PIB_relevant_countries, date_start, date_end):
     # Cargamos los datos de la tasa de interes (Federal Funds Effective Rate) de estados unidos. https://fred.stlouisfed.org/series/FEDFUNDS
@@ -1016,27 +1064,31 @@ def add_global_indicators(df, PIB_relevant_countries, date_start, date_end):
     # Cargamos los datos del indice VIX Europeo. https://es.investing.com/indices/stoxx-50-volatility-vstoxx-eur
     EUVIX_df = load_file(file_name="VSTOXX", path="./data/", ftype="csv")
     EUVIX_df = EUVIX_df.rename(columns={"target": "EUVIX"})
-    EUVIX_df = EUVIX_df[['Date', 'Price']]
+    EUVIX_df = EUVIX_df[["Date", "Price"]]
     EUVIX_df["Date"] = pd.to_datetime(EUVIX_df["Date"], format="%m/%d/%Y")
     EUVIX_df = EUVIX_df.rename(columns={"Price": "EUVIX"})
-
 
     # Cargamos los datos del PIB de los paises seleccionados
     worldPIB = load_file(file_name="worldPIBdata", path="./data/", ftype="xls", skiprows=3)
     worldPIB = worldPIB.iloc[:, [0, 1] + list(range(50, len(worldPIB.columns)))]
     # df = df.iloc[1:, :]
 
-    worldPIB=worldPIB.set_index('Country Code').loc[PIB_relevant_countries].T
-    worldPIB = worldPIB.drop(index='Country Name')
-    worldPIB.index.name = 'Date'
+    worldPIB = worldPIB.set_index("Country Code").loc[PIB_relevant_countries].T
+    worldPIB = worldPIB.drop(index="Country Name")
+    worldPIB.index.name = "Date"
     worldPIB.reset_index(inplace=True)
     worldPIB["Date"] = pd.to_datetime(worldPIB["Date"], format="%Y")
-    worldPIB.columns.name = ''
+    worldPIB.columns.name = ""
     worldPIB = worldPIB.rename(columns={col: f"PIB_{col}" for col in worldPIB.columns[1:]})
 
-
     # Cargamos los datos de AAII (American Association of Individual Investors)
-    AAII_df=load_file(file_name="IIAA_sentiment", path="./data/", ftype="xls", usecols=range(0,4), **{"skiprows":3, "skipfooter":203})
+    AAII_df = load_file(
+        file_name="IIAA_sentiment",
+        path="./data/",
+        ftype="xls",
+        usecols=range(0, 4),
+        **{"skiprows": 3, "skipfooter": 203},
+    )
     AAII_df["Date"] = pd.to_datetime(AAII_df["Date"], format="%Y-%m-%d %H:%M:%S")
 
     # Loas AAII stock sentiment historic data.
@@ -1044,13 +1096,14 @@ def add_global_indicators(df, PIB_relevant_countries, date_start, date_end):
         columns={
             "Bullish": "AAII_Bullish",
             "Neutral": "AAII_Neutral",
-            "Bearish": "AAII_Bearish",})
+            "Bearish": "AAII_Bearish",
+        }
+    )
 
     # Get selected time range for training
     if date_end:
         df = df[df["Date"] <= date_end]
         AAII_df = AAII_df[AAII_df["Date"] < date_end]
-
 
     if date_start:
         df = df[df["Date"] >= date_start]
@@ -1066,30 +1119,31 @@ def add_global_indicators(df, PIB_relevant_countries, date_start, date_end):
     df = df.merge(VIX_df, on="Date", how="left")
     df = df.merge(EUVIX_df, on="Date", how="left")
 
-    df['year'] = pd.to_datetime(df['Date']).dt.year
+    df["year"] = pd.to_datetime(df["Date"]).dt.year
 
     # Crear una columna temporal 'year' en df2 convirtiendo 'date' a enteros
     # Extraer el año directamente de la columna 'Date' en worldPIB
-    worldPIB['year'] = pd.to_datetime(worldPIB['Date']).dt.year
+    worldPIB["year"] = pd.to_datetime(worldPIB["Date"]).dt.year
 
     # Realizar el merge usando la columna temporal 'year'
-    df = pd.merge(df, worldPIB, on='year', how='left')
-    df = df.rename(columns={'Date_x': 'Date'})
-    df.drop(columns=['Date_y'], inplace=True)
+    df = pd.merge(df, worldPIB, on="year", how="left")
+    df = df.rename(columns={"Date_x": "Date"})
+    df.drop(columns=["Date_y"], inplace=True)
     # Eliminar la columna temporal 'year' después del merge
-    df = df.drop(columns=['year'])
+    df = df.drop(columns=["year"])
 
     df = df.ffill()
     df = df.bfill()
 
     return df
 
-def create_combined_ts_df(target_file, exog_files):
+
+def create_combined_ts_df(target_file, exog_files, data_dir="./data/"):
     """
     Combines a target time series with multiple exogenous time series into a single DataFrame.
 
-    This function takes a target file containing the main time series and a list of files 
-    with exogenous time series. It preprocesses all input files, renames the target column 
+    This function takes a target file containing the main time series and a list of files
+    with exogenous time series. It preprocesses all input files, renames the target column
     of each exogenous series, and merges them with the target series based on the 'Date' column.
 
     Parameters:
@@ -1102,8 +1156,8 @@ def create_combined_ts_df(target_file, exog_files):
     Returns:
     -------
     pandas.DataFrame
-        A DataFrame that combines the target time series and all provided exogenous series. 
-        The resulting DataFrame includes the 'Date' column, the target series, and each 
+        A DataFrame that combines the target time series and all provided exogenous series.
+        The resulting DataFrame includes the 'Date' column, the target series, and each
         exogenous series as separate columns.
 
     Example:
@@ -1116,13 +1170,13 @@ def create_combined_ts_df(target_file, exog_files):
     -----
     - The function assumes all input files are in the './data/' directory and are in CSV format.
     - The preprocessing steps applied are handled by `load_file` and `investing_preprocessing` functions.
-    - The merge is performed on the 'Date' column using a left join, ensuring that all dates in the 
+    - The merge is performed on the 'Date' column using a left join, ensuring that all dates in the
       target series are preserved, even if some exogenous series are missing values for certain dates.
     """
 
     exog_dfs = []
     for exog_file in exog_files:
-        df = load_file(file_name=exog_file, path="./data/", ftype="csv")
+        df = load_file(file_name=exog_file, path=data_dir, ftype="csv")
         df = investing_preprocessing(df)
         df = df.rename(columns={"target": f"exog_{exog_file}"})
         exog_dfs.append(df)
@@ -1134,5 +1188,5 @@ def create_combined_ts_df(target_file, exog_files):
     for exog_df in exog_dfs:
         target_column = exog_df.columns[1]  # The 2nd column is treated as the exogenous 'target'
         # Merge on the 'Date' column
-        result_df = result_df.merge(exog_df[['Date', target_column]], on='Date', how='left')
+        result_df = result_df.merge(exog_df[["Date", target_column]], on="Date", how="left")
     return result_df
