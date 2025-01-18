@@ -7,21 +7,22 @@
 
 Although the forecasting and trading components are independent, future iterations aim to integrate them into a unified framework.
 
----
+
 
 ## Table of Contents
 
 1. [Project Overview](#project-overview)
 2. [Temporal Fusion Transformer for Financial Forecasting](#temporal-fusion-transformer-for-financial-forecasting)
 3. [Reinforcement Learning Trading Bot](#reinforcement-learning-trading-bot)
-4. [Key Features](#key-features)
-5. [Project Structure](#project-structure)
-6. [Results](#results)
-7. [Future Work](#future-work)
-8. [Installation](#installation)
-9. [Common Import Errors and Solutions](#common-import-errors-and-solutions)
+4. [Variables Used for Model Training](#variables-used-for-model-training)
+5. [Key Features](#key-features)
+6. [Project Structure](#project-structure)
+7. [Results](#results)
+8. [Future Work](#future-work)
+9. [Installation](#installation)
+10. [Common Import Errors and Solutions](#common-import-errors-and-solutions)
 
----
+
 
 ## Project Overview
 
@@ -30,7 +31,7 @@ Although the forecasting and trading components are independent, future iteratio
 1. **TFT Forecasting**: Predicts multi-horizon trends in major financial indices, providing insights into market movements and enabling data-driven portfolio construction.
 2. **DRL Trading Bot**: Learns optimal trading strategies through deep reinforcement learning, enabling dynamic responses to market conditions.
 
----
+
 
 ## Temporal Fusion Transformer for Financial Forecasting
 
@@ -49,7 +50,7 @@ TFT models in this project forecast trends for indices like the S&P 500, Nasdaq,
 - **Maximized Returns**: Identifying high-confidence upward trends.
 - **Risk Management**: Avoiding indices with high forecast uncertainty.
 
----
+
 
 ## Reinforcement Learning Trading Bot
 
@@ -64,7 +65,73 @@ The **DRL Trading Bot** is designed to make intelligent buy, sell, or hold decis
 - **Environment Interaction**: Simulates a trading environment using historical data to train the bot.
 - **Scalable Framework**: Supports integration with real-time trading systems in future iterations.
 
----
+
+
+## Variables Used for Model Training
+
+This section describes the variables used to train price prediction models and the trading bot. These variables include technical indicators, macroeconomic data, and derived features that capture complex patterns in financial time series.
+
+## Key Variables
+
+### Macroeconomic Variables
+
+- **GDP of influential countries**: Gross Domestic Product (GDP) of several key economies, used to assess the overall state of the global economy and its impact on financial markets.
+- **Federal Reserve Interest Rate (FEDFUNDS)**: Reflects U.S. monetary policy and its influence on liquidity and risk appetite.
+
+### Technical Indicators
+
+- **Simple Moving Average (SMA)**:
+  - SMA_50 and SMA_200: Price averages calculated over 50- and 200-day windows, respectively. These averages are used to identify long-term trends.
+- **Exponential Moving Average (EMA)**: Similar to SMA but gives more weight to recent prices, making it more responsive to changes.
+- **Relative Strength Index (RSI)**: An oscillator that measures the speed and magnitude of price movements, helping to identify overbought (>70) or oversold (<30) conditions.
+- **Bollinger Bands**:
+  - Upper and lower bands reflect price volatility over a specific time window.
+- **Moving Average Convergence Divergence (MACD)**: A momentum indicator that combines moving averages to detect bullish and bearish crossovers.
+- **ATR (Average True Range)**: Measures recent price volatility, providing key information on market risk.
+- **CCI (Commodity Channel Index)**: Identifies overbought or oversold levels relative to a statistical average.
+- **ROC (Rate of Change)**: Measures the percentage change in price over a specified period.
+- **Williams %R**: A momentum indicator showing overbought and oversold levels relative to high and low prices.
+- **Stochastic Oscillator**: Compares the closing price to a range of prices over a period, useful for spotting reversals.
+
+### Derived and Smoothed Variables
+
+- **Gaussian Filters**: Applied to the target price series to smooth out volatility and highlight underlying trends.
+  - Gaussian filter formula:
+
+    $$
+    \text{G}(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{x^2}{2\sigma^2}}
+    $$
+
+    Where \(\sigma\) controls the level of smoothing.
+- **Lags of the target variable**: Lagged values of the target price that capture market inertia and repetitive patterns.
+- **Smoothed moving averages (target_smoothed)**: Additional smoothing of the target variable to enhance model stability.
+
+### Bullish and Bearish Trends
+
+Signals are generated based on defined rules to identify clear trends:
+
+- **Moving Averages**:
+  - Bullish: When SMA_50 > SMA_200.
+  - Bearish: When SMA_50 < SMA_200.
+- **RSI**:
+  - Bullish: RSI < 30 (oversold).
+  - Bearish: RSI > 70 (overbought).
+- **Bollinger Bands**:
+  - Bullish: Price is below the lower band.
+  - Bearish: Price is above the upper band.
+- **MACD**:
+  - Bullish: MACD > Signal Line.
+  - Bearish: MACD < Signal Line.
+- **ATR**:
+  - Bullish: Current ATR > ATR moving average.
+  - Bearish: Current ATR < ATR moving average.
+
+### Exogenous Variables
+
+- **External stock indices**: Data from other relevant indices, used as exogenous variables to improve the model's predictive power.
+
+These variables are crucial to capturing the various factors that influence financial market movements, ranging from macroeconomic data to technical signals and derived trends.
+
 
 ## Key Features
 
@@ -73,7 +140,7 @@ The **DRL Trading Bot** is designed to make intelligent buy, sell, or hold decis
 3. **Risk Management**: Confidence intervals in forecasts and adaptive trading strategies.
 4. **Future Integration**: Plans to combine TFT predictions with DRL trading for end-to-end automation.
 
----
+
 
 ## Project Structure
 
@@ -84,7 +151,7 @@ The **DRL Trading Bot** is designed to make intelligent buy, sell, or hold decis
 - **`Stock-Price-Forecasting-TFT/`**: Codebase for training and evaluating TFT models.
 - **`RL-Trading-Bot/`**: Implementation of the deep reinforcement learning trading bot.
 
----
+
 
 ## Results
 
@@ -99,7 +166,7 @@ The **DRL Trading Bot** is designed to make intelligent buy, sell, or hold decis
 
 - Working on it!
 
----
+
 
 ## Future Work
 
@@ -107,7 +174,7 @@ The **DRL Trading Bot** is designed to make intelligent buy, sell, or hold decis
 2. **Real-Time Capabilities**: Adapting both models for live market data.
 3. **Advanced Features**: Incorporating macroeconomic indicators and trend reversal detection.
 
----
+
 
 ## Installation
 
@@ -129,7 +196,7 @@ The **DRL Trading Bot** is designed to make intelligent buy, sell, or hold decis
     pip install -r requirements.txt
     ```
 
----
+
 
 ## Common Import Errors and Solutions
 
