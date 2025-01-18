@@ -37,6 +37,8 @@ Although the forecasting and trading components are independent, future iteratio
 
 The **Temporal Fusion Transformer (TFT)** is a deep learning model designed for multi-horizon time series forecasting. Its advanced architecture combines attention mechanisms with recurrent layers, capturing short- and long-term dependencies to provide accurate forecasts with confidence intervals.
 
+![tft](https://github.com/user-attachments/assets/9518091a-f3e3-4eb3-83a0-fe3e087d5edb)
+
 ### Advantages of TFT
 
 - **Multi-Horizon Forecasting**: Predicts trends over multiple time steps, supporting long-term planning.
@@ -70,8 +72,6 @@ The **DRL Trading Bot** is designed to make intelligent buy, sell, or hold decis
 ## Variables Used for Model Training
 
 This section describes the variables used to train price prediction models and the trading bot. These variables include technical indicators, macroeconomic data, and derived features that capture complex patterns in financial time series.
-
-## Key Variables
 
 ### Macroeconomic Variables
 
