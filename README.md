@@ -1,6 +1,6 @@
-# QuantTrader-TFT: Forecasting and Trading Financial Indices with Advanced AI Models
+# QuantTraderDL: Forecasting and Trading Financial Indices with Advanced AI Models
 
-**QuantTrader-TFT** is a comprehensive project aimed at leveraging AI for smarter investment strategies in financial markets. The repository combines two cutting-edge approaches:
+**QuantTraderDL** is a comprehensive project aimed at leveraging AI for smarter investment strategies in financial markets. The repository combines two cutting-edge approaches:
 
 1. **Temporal Fusion Transformer (TFT)**: A model for forecasting the prices of major stock market indices (e.g., S&P 500, Nasdaq, IBEX 35).
 2. **Deep Reinforcement Learning (DRL) Trading Bot**: A trading bot that learns to make intelligent decisions based on market dynamics.
