@@ -1,181 +1,235 @@
-# QuantTrader-TFT: Forecasting Financial Indices with Temporal Fusion Transformers for Smarter Investments
+# QuantTrader-TFT: Forecasting and Trading Financial Indices with Advanced AI Models
 
-**QuantTrader-TFT** is a project focused on predicting the prices of major stock market indices—such as the S&P 500, Nasdaq, IBEX 35, Dow Jones, and EURO STOXX 50—using Temporal Fusion Transformer (TFT) models. The goal is to create an investment portfolio that maximizes returns while minimizing risk, leveraging the predictive capabilities of the TFT models.
+**QuantTrader-TFT** is a comprehensive project aimed at leveraging AI for smarter investment strategies in financial markets. The repository combines two cutting-edge approaches:
 
----
+1. **Temporal Fusion Transformer (TFT)**: A model for forecasting the prices of major stock market indices (e.g., S&P 500, Nasdaq, IBEX 35).
+2. **Deep Reinforcement Learning (DRL) Trading Bot**: A trading bot that learns to make intelligent decisions based on market dynamics.
+
+Although the forecasting and trading components are independent, future iterations aim to integrate them into a unified framework.
+
+
 
 ## Table of Contents
-1. [Project Overview](#project-overview)
-2. [Temporal Fusion Transformer (TFT) for Financial Index Prediction](#temporal-fusion-transformer-tft-for-financial-index-prediction)
-   - [Advantages of TFT in Financial Forecasting](#advantages-of-tft-in-financial-forecasting)
-   - [Variable Types in TFT](#variable-types-in-tft)
-   - [Application to Financial Indices](#application-to-financial-indices)
-3. [Key Features](#key-features)
-4. [Project Structure](#project-structure)
-5. [Future Work](#future-work)
-6. [Installation](#installation)
-7. [Common Import Errors and Solutions](#common-import-errors-and-solutions)
 
----
+1. [Project Overview](#project-overview)
+2. [Temporal Fusion Transformer for Financial Forecasting](#temporal-fusion-transformer-for-financial-forecasting)
+3. [Reinforcement Learning Trading Bot](#reinforcement-learning-trading-bot)
+4. [Variables Used for Model Training](#variables-used-for-model-training)
+5. [Key Features](#key-features)
+6. [Project Structure](#project-structure)
+7. [Results](#results)
+8. [Future Work](#future-work)
+9. [Installation](#installation)
+10. [Common Import Errors and Solutions](#common-import-errors-and-solutions)
+
+
 
 ## Project Overview
 
-QuantTrader-TFT uses Temporal Fusion Transformer (TFT) models to forecast trends in financial indices. By analyzing forecasts with confidence intervals, the project aims to identify indices with high-confidence upward trends, making it possible to build a data-driven, risk-adjusted portfolio. The strategy optimizes returns by selecting indices that are more likely to yield profitable outcomes while managing uncertainty.
+**QuantTrader-TFT** aims to tackle the challenges of financial forecasting and trading using state-of-the-art AI techniques. The project consists of two primary components:
 
-## Temporal Fusion Transformer (TFT) for Financial Index Prediction
+1. **TFT Forecasting**: Predicts multi-horizon trends in major financial indices, providing insights into market movements and enabling data-driven portfolio construction.
+2. **DRL Trading Bot**: Learns optimal trading strategies through deep reinforcement learning, enabling dynamic responses to market conditions.
 
-The **Temporal Fusion Transformer (TFT)** is a deep learning model designed for multi-horizon time series forecasting. It combines attention mechanisms and recurrent layers, effectively capturing short- and long-term dependencies, making it ideal for the nuanced domain of financial forecasting.
 
-### Advantages of TFT in Financial Forecasting
 
-- **Multi-Horizon Forecasting**: TFTs can predict price movements over multiple future time steps, allowing for dynamic strategy adjustments based on anticipated trends.
-- **Uncertainty Management**: TFT models provide forecasts with confidence intervals, essential for managing risk in finance. Indices with high-confidence upward trends are prioritized, while those with high uncertainty are treated with caution.
-- **Rich Feature Integration**: TFTs can incorporate diverse data sources—including historical prices, technical indicators, and macroeconomic variables—capturing a comprehensive view of factors affecting index movements.
+## Temporal Fusion Transformer for Financial Forecasting
 
-### Variable Types in TFT
+The **Temporal Fusion Transformer (TFT)** is a deep learning model designed for multi-horizon time series forecasting. Its advanced architecture combines attention mechanisms with recurrent layers, capturing short- and long-term dependencies to provide accurate forecasts with confidence intervals.
 
-![image](https://github.com/user-attachments/assets/28d258c8-8fa6-4a07-b9db-eafbb7112b6c)
+![tft](https://github.com/user-attachments/assets/9518091a-f3e3-4eb3-83a0-fe3e087d5edb)
 
-To make accurate predictions, TFT models leverage various variable types based on their characteristics and predictability. This structured approach allows the model to treat each type appropriately, enhancing overall prediction accuracy:
+### Advantages of TFT
 
-1. **Static Variables**: Fixed attributes that do not change over time (e.g., specific index characteristics). These allow the model to capture foundational patterns unique to each index.
-
-2. **Time-Varying Known Variables**: Variables that change over time but whose future values are known, such as calendar dates or economic indicators. These allow the model to account for predictable seasonal effects and scheduled economic events.
-
-3. **Time-Varying Unknown Variables**: Variables that change over time and must be predicted, such as stock prices or technical indicators (e.g., moving averages, RSI). This enables the model to learn from past trends and make informed future predictions.
-
-4. **Lagged Variables and Derived Features**: Values from previous time steps (e.g., moving averages, lagged returns) provide context for recent trends, helping the model detect shifts in market direction or volatility.
+- **Multi-Horizon Forecasting**: Predicts trends over multiple time steps, supporting long-term planning.
+- **Uncertainty Quantification**: Confidence intervals allow for risk-aware decision-making.
+- **Feature Integration**: Leverages static, time-varying known, and time-varying unknown variables to enhance prediction accuracy.
 
 ### Application to Financial Indices
 
-The TFT model in QuantTrader-TFT leverages these variables to predict trends in major indices, including the S&P 500, Nasdaq, and IBEX 35. The multi-horizon forecasts generated by the model inform the construction of an investment portfolio that:
+TFT models in this project forecast trends for indices like the S&P 500, Nasdaq, and IBEX 35, enabling:
 
-- **Maximizes Return**: By identifying high-confidence upward trends.
-- **Minimizes Risk**: By managing exposure to indices based on forecast uncertainty.
+- **Maximized Returns**: Identifying high-confidence upward trends.
+- **Risk Management**: Avoiding indices with high forecast uncertainty.
 
----
+
+
+## Reinforcement Learning Trading Bot
+
+The **DRL Trading Bot** is designed to make intelligent buy, sell, or hold decisions based on market dynamics. It uses reinforcement learning to maximize cumulative returns by:
+
+- Learning optimal strategies through interaction with historical data.
+- Adapting to changing market conditions.
+
+### Features of the Trading Bot
+
+- **Reward Optimization**: Focuses on maximizing returns while minimizing drawdowns.
+- **Environment Interaction**: Simulates a trading environment using historical data to train the bot.
+- **Scalable Framework**: Supports integration with real-time trading systems in future iterations.
+
+
+
+## Variables Used for Model Training
+
+This section describes the variables used to train price prediction models and the trading bot. These variables include technical indicators, macroeconomic data, and derived features that capture complex patterns in financial time series.
+
+### Macroeconomic Variables
+
+- **GDP of influential countries**: Gross Domestic Product (GDP) of several key economies, used to assess the overall state of the global economy and its impact on financial markets.
+- **Federal Reserve Interest Rate (FEDFUNDS)**: Reflects U.S. monetary policy and its influence on liquidity and risk appetite.
+
+### Technical Indicators
+
+- **Simple Moving Average (SMA)**:
+  - SMA_50 and SMA_200: Price averages calculated over 50- and 200-day windows, respectively. These averages are used to identify long-term trends.
+- **Exponential Moving Average (EMA)**: Similar to SMA but gives more weight to recent prices, making it more responsive to changes.
+- **Relative Strength Index (RSI)**: An oscillator that measures the speed and magnitude of price movements, helping to identify overbought (>70) or oversold (<30) conditions.
+- **Bollinger Bands**:
+  - Upper and lower bands reflect price volatility over a specific time window.
+- **Moving Average Convergence Divergence (MACD)**: A momentum indicator that combines moving averages to detect bullish and bearish crossovers.
+- **ATR (Average True Range)**: Measures recent price volatility, providing key information on market risk.
+- **CCI (Commodity Channel Index)**: Identifies overbought or oversold levels relative to a statistical average.
+- **ROC (Rate of Change)**: Measures the percentage change in price over a specified period.
+- **Williams %R**: A momentum indicator showing overbought and oversold levels relative to high and low prices.
+- **Stochastic Oscillator**: Compares the closing price to a range of prices over a period, useful for spotting reversals.
+
+### Derived and Smoothed Variables
+
+- **Gaussian Filters**: Applied to the target price series to smooth out volatility and highlight underlying trends.
+  - Gaussian filter formula:
+
+    $$
+    \text{G}(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{x^2}{2\sigma^2}}
+    $$
+
+    Where \(\sigma\) controls the level of smoothing.
+- **Lags of the target variable**: Lagged values of the target price that capture market inertia and repetitive patterns.
+- **Smoothed moving averages (target_smoothed)**: Additional smoothing of the target variable to enhance model stability.
+
+### Bullish and Bearish Trends
+
+Signals are generated based on defined rules to identify clear trends:
+
+- **Moving Averages**:
+  - Bullish: When SMA_50 > SMA_200.
+  - Bearish: When SMA_50 < SMA_200.
+- **RSI**:
+  - Bullish: RSI < 30 (oversold).
+  - Bearish: RSI > 70 (overbought).
+- **Bollinger Bands**:
+  - Bullish: Price is below the lower band.
+  - Bearish: Price is above the upper band.
+- **MACD**:
+  - Bullish: MACD > Signal Line.
+  - Bearish: MACD < Signal Line.
+- **ATR**:
+  - Bullish: Current ATR > ATR moving average.
+  - Bearish: Current ATR < ATR moving average.
+
+### Exogenous Variables
+
+- **External stock indices**: Data from other relevant indices, used as exogenous variables to improve the model's predictive power.
+
+These variables are crucial to capturing the various factors that influence financial market movements, ranging from macroeconomic data to technical signals and derived trends.
+
 
 ## Key Features
 
-- **Time Series Forecasting**: Uses Temporal Fusion Transformers (TFT) to forecast future prices of major financial indices.
-- **Portfolio Optimization**: Constructs a portfolio that maximizes returns and minimizes risks based on forecasted prices and confidence intervals.
-- **Confidence Interval-Based Decision Making**: Focuses on indices with the most promising upward trends, as identified by prediction confidence levels.
-- **Risk Management**: Reduces exposure to indices with high forecast uncertainty.
-- **Future Strategy Enhancements**: Plans to implement strategies for detecting trend reversals or rapid changes in market conditions.
-
----
-
-## Repo Structure
-
-- **`Data/`**  
-  Collection, cleaning, and preparation of historical stock market data, forming the foundation for training predictive models.  
-
-- **`Plots/`**  
-  Visualizations of model predictions generated during hyperparameter optimization, providing insights into performance across different configurations.  
-
-- **`Results/`**  
-  Detailed experimental results, including evaluation metrics and the hyperparameter configurations used, ensuring reproducibility and in-depth analysis.  
-
-- **`Alternatives/`**  
-  Alternative modeling approaches, such as Long Short-Term Memory (LSTM) networks and variations of the Temporal Fusion Transformer (TFT), to explore diverse forecasting methodologies.  
-
-- **`trading_multiseries_exog_gauss`**  
-  Main script for generating index price predictions using the Temporal Fusion Transformer (TFT) model for multi-horizon time series forecasting.  
-
-- **`tradingBot_RL` (new)**  
-  Primary script for training and evaluating a reinforcement learning-based trading bot, enabling intelligent decision-making for trading strategies.  
+1. **Forecasting with TFT**: High-accuracy price predictions for major financial indices.
+2. **Trading with DRL**: Intelligent decision-making for stock market trading.
+3. **Risk Management**: Confidence intervals in forecasts and adaptive trading strategies.
+4. **Future Integration**: Plans to combine TFT predictions with DRL trading for end-to-end automation.
 
 
----
+
+## Project Structure
+
+- **`data/`**: Historical market data preparation for both forecasting and trading.
+- **`plots/`**: Visualizations of TFT predictions.
+- **`results/`**: Evaluation metrics and hyperparameter configurations for reproducibility.
+- **`alternatives/`**: Exploratory models (e.g., LSTM) for comparison.
+- **`Stock-Price-Forecasting-TFT/`**: Codebase for training and evaluating TFT models.
+- **`RL-Trading-Bot/`**: Implementation of the deep reinforcement learning trading bot.
+
+
 
 ## Results
 
-The results obtained are surprisingly good given the complexity of the problem and the limited computational resources. As an example we can see the top 10 models found for the SyP500 index with their respective errors.
+### TFT Forecasting Results
 
-|   ID |   Test MAE |   Gradient Clip Val |   Hidden Size |   Dropout |   Hidden Continuous Size |   Attention Head Size |   Learning Rate | Loss Function   |   Epochs |
-|-----:|-----------:|--------------------:|--------------:|----------:|-------------------------:|----------------------:|----------------:|:----------------|---------:|
-|    6 |    53.1535 |                0.01 |             8 |       0.1 |                       64 |                    16 |           0.005 | QuantileLoss    |       50 |
-|   52 |    79.7303 |                0.01 |            16 |       0.2 |                       64 |                     4 |           0.005 | QuantileLoss    |       50 |
-|   18 |    82.5422 |                0.03 |            32 |       0.3 |                      128 |                     4 |           0.01  | QuantileLoss    |       50 |
-|   74 |    83.6289 |                0.01 |             8 |       0.3 |                       64 |                     8 |           0.005 | QuantileLoss    |       50 |
-|   24 |    88.3821 |                0.03 |            16 |       0.2 |                      128 |                     4 |           0.005 | QuantileLoss    |       50 |
-|   13 |    92.4417 |                0.03 |             8 |       0.2 |                      128 |                    16 |           0.01  | QuantileLoss    |       50 |
-|   10 |    92.6973 |                0.05 |            16 |       0.3 |                       64 |                     8 |           0.01  | QuantileLoss    |       50 |
-|   28 |    92.9912 |                0.03 |            32 |       0.3 |                       16 |                     4 |           0.01  | QuantileLoss    |       50 |
-|   25 |    93.8614 |                0.01 |             8 |       0.3 |                       64 |                    16 |           0.03  | QuantileLoss    |       50 |
-|   51 |    96.5877 |                0.01 |            16 |       0.3 |                      128 |                     8 |           0.005 | QuantileLoss    |       50 |
+- Achieved a test MAE of **53.15** for the S&P 500 index over a 5-month period.
+- Example prediction performance:
 
-The best result obtained is with a mean absolute error (MAE) of 54.153 with test data. This means that if we had used this trained model to predict the price of the 25 following days over 5 months we would have achieved predictions that deviate, on average, by only 54.153$ from the actual values. This level of accuracy demonstrates the model's ability to effectively capture the underlying patterns of the SyP500 index, despite the inherent complexity of financial time series data.
+![Example Prediction](https://github.com/user-attachments/assets/3faf9b0c-b0f8-4411-91d2-c523965146dc)
 
-Such performance is noteworthy given the limited computational resources and the constraints imposed on model hyperparameters. Furthermore, these results highlight the potential of employing advanced techniques like attention mechanisms
+### DRL Trading Bot Results
 
-We can see the predictions during those 5 months:
-![iteracion_6](https://github.com/user-attachments/assets/3faf9b0c-b0f8-4411-91d2-c523965146dc)
+- Working on it!
+
 
 
 ## Future Work
 
-Future plans for QuantTrader-TFT include:
+1. **Integration of TFT and DRL**: Combining forecasting insights with trading strategies.
+2. **Real-Time Capabilities**: Adapting both models for live market data.
+3. **Advanced Features**: Incorporating macroeconomic indicators and trend reversal detection.
 
-- **Significant Trend Change Detection**: Developing methods to detect sharp trend changes or reversals to adjust the portfolio strategy dynamically.
-- **Enhanced Economic Indicators**: Adding new macroeconomic and market indicators as input features for improved accuracy.
-- **Backtesting and Real-Time Forecasting**: Implementing backtesting for performance evaluation and adding real-time forecasting for adaptive portfolio management.
 
---- 
-
-With these capabilities, **QuantTrader-TFT** aims to build a reliable framework for forecasting financial indices and creating optimized, risk-aware investment strategies.
 
 ## Installation
 
 1. Clone the repository:
+
     ```bash
-    git clone https://github.com/your-username/TFT-QuantTrader.git
+    git clone https://github.com/MrGG14/QuantTrader-TFT.git
     ```
+
+2. Navigate to the directory:
+
+    ```bash
+    cd QuantTrader-TFT
+    ```
+
+3. Install dependencies:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+
 
 ## Common Import Errors and Solutions
 
-When running the script, you may encounter some common import errors. Below is a list of known issues and recommended solutions:
-
 1. **Error**: `Cannot import name '_centered' from 'scipy.signal.signaltools'`
-   - **Solution**: Manually define and add the `_centered` function in `scipy.signal.signaltools`:
-     ```python
-     def _centered(arr, newsize):
-         # Return the center newsize portion of the array.
-         newsize = np.asarray(newsize)
-         currsize = np.array(arr.shape)
-         startind = (currsize - newsize) // 2
-         endind = startind + newsize
-         myslice = [slice(startind[k], endind[k]) for k in range(len(endind))]
-         return arr[tuple(myslice)]
+   - **Solution**: Add the `_centered` function manually in `scipy.signal.signaltools`.
 
-     scipy.signal.signaltools._centered = _centered
-     ```
-
-2. **Error**: `× Encountered error while generating package metadata.`
-   - **Cause**: This can occur when installing `pytorch-forecasting`.
-   - **Solution**: Ensure that your Python version is **3.10.x** or lower.
+2. **Error**: `Encountered error while generating package metadata.`
+   - **Solution**: Use Python **3.10.x** or lower.
 
 3. **Error**: `ModuleNotFoundError: No module named 'numpy.lib.function_base'`
-   - **Solution**: Update NumPy to the latest version:
+   - **Solution**: Update NumPy:
      ```bash
      pip install --upgrade numpy
      ```
 
-4. **Error**: "A module that was compiled using NumPy 1.x cannot be run in NumPy 2.0.0 as it may crash."
-   - **Solution**: Downgrade NumPy to a compatible version:
+4. **Error**: "A module that was compiled using NumPy 1.x cannot be run in NumPy 2.0.0."
+   - **Solution**: Downgrade NumPy:
      ```bash
      pip install numpy==1.24.3
      ```
 
-5. **Error**: `ModuleNotFoundError: Optuna's integration modules for third-party libraries have started migrating from Optuna...`
+5. **Error**: `ModuleNotFoundError: Optuna's integration modules for third-party libraries...`
    - **Solution**: Install `optuna-integration`:
      ```bash
      pip install optuna-integration
      ```
 
-6. **Error**: `TypeError: Cannot create a consistent method resolution order (MRO) for bases Callback, PyTorchLightningPruningCallback`
-   - **Solution**: Install specific versions of the required libraries:
+6. **Error**: `TypeError: Cannot create a consistent method resolution order (MRO)...`
+   - **Solution**: Install specific library versions:
      ```bash
-     pip install torch==2.0.1 pytorch-lightning==2.0.2 pytorch_forecasting==1.0.0 torchaudio==2.0.2 torchdata==0.6.1 torchtext==0.15.2 torchvision==0.15.2 optuna==3.4
+     pip install torch==2.0.1 pytorch-lightning==2.0.2 pytorch_forecasting==1.0.0
      ```
 
+---
+
+With these capabilities, **QuantTrader-TFT** aspires to provide a robust foundation for AI-driven financial forecasting and trading strategies.
