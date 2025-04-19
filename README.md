@@ -141,3 +141,11 @@ When running the script, you may encounter some common import errors. Below is a
      pip install torch==2.0.1 pytorch-lightning==2.0.2 pytorch_forecasting==1.0.0 torchaudio==2.0.2 torchdata==0.6.1 torchtext==0.15.2 torchvision==0.15.2 optuna==3.4
      ```
 
+6. **Error**: `ImportError: Missing optional dependency 'xlrd'. Install xlrd >= 2.0.1 for xls Excel support Use pip or conda to install xlrd.`
+   - **Solution**: Install specific versions of the required libraries:
+     ```bash
+     pip install xlrd >= 2.0.1
+     ```
+
+
+
