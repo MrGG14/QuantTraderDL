@@ -1,1 +1,4 @@
 QuantConnectStrategies/01_Trend_Scanning/trend_scanning_labels.py
+__pycache__/
+lightning_logs/
+0ld/
