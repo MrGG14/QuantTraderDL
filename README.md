@@ -1,37 +1,66 @@
-# QuantTraderDL: Forecasting and Trading Financial Indices with Advanced AI Models
+# QuantTraderDL: Quantitative and AI-Driven Forecasting and Trading of Financial Indices
 
-**QuantTraderDL** is a comprehensive project aimed at leveraging AI for smarter investment strategies in financial markets. The repository combines two cutting-edge approaches:
+**QuantTraderDL** is an educational and research-oriented project combining quantitative finance theory and state-of-the-art AI to develop intelligent financial strategies. It offers a practical introduction to both traditional quantitative methods and deep learning models for forecasting and trading:
 
-1. **Temporal Fusion Transformer (TFT)**: A model for forecasting the prices of major stock market indices (e.g., S&P 500, Nasdaq, IBEX 35).
-2. **Deep Reinforcement Learning (DRL) Trading Bot**: A trading bot that learns to make intelligent decisions based on market dynamics.
+1. **QuantConnect Strategies**: A collection of algorithmic trading strategies implemented using the QuantConnect platform, serving as a foundational exploration into quantitative trading methodologies.
+2. **Temporal Fusion Transformer (TFT)**: A model for forecasting the prices of major stock market indices (e.g., S&P 500, Nasdaq, IBEX 35).
+3. **Deep Reinforcement Learning (DRL) Trading Bot**: A trading bot that learns to make intelligent decisions based on market dynamics.
 
 Although the forecasting and trading components are independent, future iterations aim to integrate them into a unified framework.
-
-
 
 ## Table of Contents
 
 1. [Project Overview](#project-overview)
-2. [Temporal Fusion Transformer for Financial Forecasting](#temporal-fusion-transformer-for-financial-forecasting)
-3. [Reinforcement Learning Trading Bot](#reinforcement-learning-trading-bot)
-4. [Variables Used for Model Training](#variables-used-for-model-training)
-5. [Key Features](#key-features)
-6. [Project Structure](#project-structure)
-7. [Results](#results)
-8. [Future Work](#future-work)
-9. [Installation](#installation)
-10. [Common Import Errors and Solutions](#common-import-errors-and-solutions)
-
-
+2. [QuantConnect Strategies](#quantconnect-strategies)
+4. [Temporal Fusion Transformer for Financial Forecasting](#temporal-fusion-transformer-for-financial-forecasting)
+5. [Reinforcement Learning Trading Bot](#reinforcement-learning-trading-bot)
+6. [Variables Used for Model Training](#variables-used-for-model-training)
+7. [Key Features](#key-features)
+8. [Project Structure](#project-structure)
+9. [Results](#results)
+10. [Future Work](#future-work)
+11. [Installation](#installation)
+12. [Common Import Errors and Solutions](#common-import-errors-and-solutions)
 
 ## Project Overview
 
-**QuantTrader-TFT** aims to tackle the challenges of financial forecasting and trading using state-of-the-art AI techniques. The project consists of two primary components:
+**QuantTrader-TFT** addresses the challenges of quantitative investment strategy development by integrating traditional finance methodologies with state-of-the-art AI techniques. The project consists of three primary components:
 
-1. **TFT Forecasting**: Predicts multi-horizon trends in major financial indices, providing insights into market movements and enabling data-driven portfolio construction.
-2. **DRL Trading Bot**: Learns optimal trading strategies through deep reinforcement learning, enabling dynamic responses to market conditions.
+1. **QuantConnect Strategies**: A growing repository of algorithmic trading strategies implemented on QuantConnect. These are designed to explore various foundational and advanced concepts in quantitative finance — from momentum and mean reversion to factor models and portfolio optimization. While these strategies are kept isolated for educational clarity, real-world systems often combine multiple strategies into a cohesive, risk-aware trading engine.
+2.  **TFT Forecasting**: Predicts multi-horizon trends in major financial indices, providing insights into market movements and enabling data-driven portfolio construction.
+3. **DRL Trading Bot**: Learns optimal trading strategies through deep reinforcement learning, enabling dynamic responses to market conditions.
+
+## QuantConnect Strategies
+
+The `QuantConnectStrategies/` directory contains a diverse set of algorithmic trading strategies built for the QuantConnect platform. These are used to study the logic and behavior of quantitative strategies in isolation.
+
+### 🔍 Strategy Categories and Examples
+
+The `QuantConnectStrategies/` directory contains a curated set of algorithmic trading experiments designed to explore diverse quantitative methodologies using the QuantConnect platform. Each notebook reflects a unique research angle — from econometric modeling to deep learning and NLP applications.
+
+These strategies are **meant for educational and experimental purposes**, often studied in isolation. In real-world trading systems, the most robust portfolios integrate multiple strategies, risk models, and execution logic.
+
+To facilitate exploration and understanding, the various QuantConnect trading strategies are organized into categories based on their core approach and methodology. This categorization helps to quickly identify strategies that share similar themes, such as momentum, risk management, or machine learning techniques. Each category groups strategies that target specific market behaviors or leverage particular quantitative methods.
 
 
+| Category                         | Strategy Names                                                                                                                        | Description                                                                                             |
+|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| **Trend Following / Momentum**   | `01_Trend_Scanning`, `03_Reversion_vs_Trending_Strategy_Selection`, `14_Temporal_CNN_Prediction`                                      | Exploit market trend continuations by positioning in the direction of momentum.                          |
+| **Regime Detection / Market States** | `02_Factor_Preprocessing_Techniques_for_Regime_Detection`, `04_Hidden_Markov_Models`                                                  | Identify changing market regimes or conditions to adapt strategies accordingly.                         |
+| **Mean Reversion / Statistical Arbitrage** | `03_Reversion_vs_Trending_Strategy_Selection`, `13_PCA_Statistical_Arbitrage_Mean_Reversion`                                          | Seek profits by exploiting price reversions to mean or statistical spreads.                            |
+| **Machine Learning & Classification** | `05_FX_SVM_Wavelet_Forecasting`, `09_ML_Trading_Pairs_Selection`, `15_Gaussian_Classifier_for_Direction_Prediction`, `10_Stock_Selection_through_Clustering_Fundamental_Data` | Use ML techniques for forecasting and asset/pairs selection.                                          |
+| **Technical Pattern Recognition** | `17_Head_Shoulders_Pattern_Matching_with_CNN`                                                                                        | Detect classic technical chart patterns to generate trading signals.                                  |
+| **Dividend / Yield Strategies**  | `06_Dividend_Harvesting_Selection_of_High-Yield_Assets`                                                                              | Focus on selecting high dividend yield assets, especially around ex-dividend dates.                    |
+| **Risk Management / Volatility** | `07_Effect_of_Positive-Negative_Splits`, `08_Stoploss_Based_on_Historical_Volatility_and_Drawdown_Recovery`, `11_Inverse_Volatility_Rank_and_Allocate_to_Future_Contracts` | Manage risk by adjusting exposure based on volatility, drawdown recovery, and asymmetric signal effects.|
+| **Transaction Costs / Execution** | `12_Trading_Costs_Optimization`                                                                                                      | Simulate and optimize slippage and transaction costs to improve portfolio rebalancing.                 |
+| **Natural Language Processing (NLP)** | `16_LLM_Summarization_of_Tiingo_News_Articles`, `19_FinBERT_Model`                                                                    | Use language models to analyze and summarize financial news for sentiment and event-driven signals.    |
+| **Advanced Time Series Models**  | `18_Amazon_Chronos_Model`                                                                                                             | Experiment with Amazon’s Chronos model for advanced market time series forecasting.                    |
+
+💡 These strategies serve as a lab for testing theoretical ideas in practice. They prioritize interpretability, modeling variety, and research reproducibility over short-term performance.
+
+For general guidelines and API documentation, visit the [QuantConnect Strategy Guide](https://www.quantconnect.com/docs/v2/writing-algorithms/introduction).
+
+These scripts are meant as blueprints for further development. A successful quant system often blends multiple strategies, adds robust risk management, and adapts to changing market conditions.
 
 ## Temporal Fusion Transformer for Financial Forecasting
 
@@ -248,17 +277,10 @@ When running the script, you may encounter some common import errors. Below is a
      pip install torch==2.0.1 pytorch-lightning==2.0.2 pytorch_forecasting==1.0.0
      ```
 
-<<<<<<< HEAD
 6. **Error**: `ImportError: Missing optional dependency 'xlrd'. Install xlrd >= 2.0.1 for xls Excel support Use pip or conda to install xlrd.`
    - **Solution**: Install specific versions of the required libraries:
      ```bash
      pip install xlrd >= 2.0.1
      ```
-
-
-
-=======
----
-
 With these capabilities, **QuantTrader-TFT** aspires to provide a robust foundation for AI-driven financial forecasting and trading strategies.
->>>>>>> 891c27efbd28d1beaf5500bacb5eff63cdcf636e
+
