@@ -6,3 +6,5 @@ lightning_logs/
 
 # Ignorar la carpeta '__pycache__'
 __pycache__/
+
+QuantConnectStrategies\01_Trend_Scanning\trend_scanning_labels.py

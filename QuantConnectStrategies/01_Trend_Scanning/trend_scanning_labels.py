@@ -1,17 +1,3 @@
-#region imports
-from AlgorithmImports import *
-#endregion
-# Copyright 2019, Hudson and Thames Quantitative Research
-# All rights reserved
-# Read more: https://github.com/hudson-and-thames/mlfinlab/blob/master/LICENSE.txt
-# mlfinlab provided this code file. QuantConnect made small edits to remove some imports.
-
-"""
-Implementation of Trend-Scanning labels described in `Advances in Financial Machine Learning: Lecture 3/10
-<https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2708678>`_
-"""
-# pylint: disable=invalid-name, too-many-locals
-
 import pandas as pd
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error
