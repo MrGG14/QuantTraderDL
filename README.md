@@ -2,7 +2,7 @@
 
 **QuantTraderDL** is an educational and research-oriented project combining quantitative finance theory and state-of-the-art AI to develop intelligent financial strategies. It offers a practical introduction to both traditional quantitative methods and deep learning models for forecasting and trading:
 
-1. **QuantConnect Strategies**: A collection of algorithmic trading strategies implemented using the QuantConnect platform, serving as a foundational exploration into quantitative trading methodologies.
+1. **QuantConnect Strategies**: A collection of algorithmic trading strategies implemented using the [QuantConnect](https://www.quantconnect.com/) platform, serving as a foundational exploration into quantitative trading methodologies.
 2. **Temporal Fusion Transformer (TFT)**: A model for forecasting the prices of major stock market indices (e.g., S&P 500, Nasdaq, IBEX 35).
 3. **Deep Reinforcement Learning (DRL) Trading Bot**: A trading bot that learns to make intelligent decisions based on market dynamics.
 
